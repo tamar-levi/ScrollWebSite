@@ -2,6 +2,7 @@ const Product = require('../models/productModel');
 require('dotenv').config();
 const mongoose = require('mongoose');
 
+
 const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find(); 
@@ -15,17 +16,26 @@ const getAllProducts = async (req, res) => {
 const addProduct = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { scriptType, scrollType, price, primaryImage, additionalImages, note, isPremiumAd } = req.body;
+        const { scriptType, scrollType, price, note, isPremiumAd } = req.body;
+        
+        if (!req.files || !req.files.primaryImage) {
+            return res.status(400).json({ message: 'Primary image is required' });
+        }
+
+        const primaryImage = req.files.primaryImage[0];
+        const additionalImages = req.files.additionalImages || [];
+
         const newProduct = new Product({
             scriptType,
             scrollType,
             price,
-            primaryImage,
-            additionalImages,
+            primaryImage: primaryImage.buffer.toString('base64'),
+            additionalImages: additionalImages.map(img => img.buffer.toString('base64')),
             note,
             isPremiumAd,
-            userId, 
+            userId,
         });
+
         await newProduct.save();
         res.status(201).json({ message: 'Product created successfully', product: newProduct });
     } catch (err) {
@@ -33,6 +43,8 @@ const addProduct = async (req, res) => {
         res.status(500).send('Database error');
     }
 };
+
+
 
 const getAllProductsByUser = async (req, res) => {
     try {

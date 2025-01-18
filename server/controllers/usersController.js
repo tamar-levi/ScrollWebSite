@@ -3,7 +3,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const secretKey = process.env.JWT_SECRET_KEY;
 const bcrypt = require('bcryptjs');
-// const { sendWelcomeEmail } = require('../services/emailService');
+const { sendWelcomeEmail } = require('../services/emailService');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -43,7 +43,7 @@ const addUser = async (req, res) => {
         await newUser.save();
         const payload = { id: newUser._id, email: newUser.email };
         const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
-        // await sendWelcomeEmail(email, fullName);
+        await sendWelcomeEmail(email, fullName);
 
         res.json({
             message: 'User created successfully',

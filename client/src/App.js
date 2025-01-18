@@ -1,10 +1,10 @@
 import React from 'react';
-import GoogleAuth from './components/GoogleAuth';
+import AddProduct from './components/AddProduct';
 
 function App() {
   return (
     <div className="App">
-      <GoogleAuth />
+      <AddProduct />
     </div>
   );
 }

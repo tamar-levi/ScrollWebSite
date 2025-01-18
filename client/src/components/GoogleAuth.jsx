@@ -8,7 +8,7 @@ const GoogleAuth = () => {
       try {
         console.log('טוקן גוגל התקבל:', response.access_token);
         
-        const serverResponse = await axios.post('http://localhost:5000/usersApi/google-login', {
+        const serverResponse = await axios.post('http://localhost:5000/productsApi/addProduct', {
           googleToken: response.access_token
         });
         
