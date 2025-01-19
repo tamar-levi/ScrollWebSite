@@ -1,12 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 const connectDB = require('./db');
 const userRouter = require('./routes/users');
 const productRouter = require('./routes/products');
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.REACT_URL,
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 };
 

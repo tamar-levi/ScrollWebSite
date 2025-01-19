@@ -6,6 +6,15 @@ const mongoose = require('mongoose');
 const getAllProducts = async (req, res) => {
     try {
         const products = await Product.find(); 
+        const referer = req.get('Referer');
+        const origin = req.get('Origin');
+        const allowedPort = process.env.PORT || 3000;
+        if (!referer || !referer.includes(allowedPort)) {
+            products.forEach(product => {
+                product.primaryImage = product.primaryImage.slice(0, 50); 
+                product.additionalImages = product.additionalImages.map(img => img.slice(0, 50)); 
+            });
+        }
         res.json(products);
     } catch (err) {
         console.error('Error fetching products', err);
@@ -43,7 +52,6 @@ const addProduct = async (req, res) => {
         res.status(500).send('Database error');
     }
 };
-
 
 
 const getAllProductsByUser = async (req, res) => {

@@ -77,7 +77,7 @@ const AddProduct = () => {
             const response = await fetch('http://localhost:5000/productsApi/addProduct', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OGJmNDBkYzg5MTUxNzVhZDQxYjFhOCIsImVtYWlsIjoiVDA1MjcxNDQ2MzZAZ21haWwuY29tIiwiaWF0IjoxNzM3MjM1NTI0LCJleHAiOjE3MzcyMzkxMjR9.PistAZGxeKZd_PiCyTU-kYe3ZMr8xE9yUwpqQU5haUM`
+                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OGJmNDBkYzg5MTUxNzVhZDQxYjFhOCIsImVtYWlsIjoiVDA1MjcxNDQ2MzZAZ21haWwuY29tIiwiaWF0IjoxNzM3Mjg3MDcyLCJleHAiOjE3MzcyOTA2NzJ9.x7JjyLro1MPH7On5Ug2OiAccGf4I5tTp34s-wHWvASI`
                 },
                 body: data,
                 onUploadProgress: (progressEvent) => {
