@@ -1,5 +1,22 @@
 import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {
+    Container,
+    TextField,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    CircularProgress,
+    Box,
+    Typography,
+    Grid,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
+    LinearProgress
+} from '@mui/material';
 
 const AddProduct = () => {
     const [formData, setFormData] = useState({
@@ -11,14 +28,14 @@ const AddProduct = () => {
         note: '',
         isPremiumAd: true,
     });
-    
+
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
 
     const compressionOptions = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
-        useWebWorker: false  
+        useWebWorker: false,
     };
 
     const compressImage = async (imageFile) => {
@@ -44,20 +61,20 @@ const AddProduct = () => {
     };
 
     const handleAdditionalImagesChange = async (e) => {
-        const files = Array.from(e.target.files);
+        const files = Array.from(e.target.files); // המרת הקבצים למערך
         const compressedImages = await Promise.all(
-            files.map(file => compressImage(file))
+          files.map((file) => compressImage(file)) // כיווץ התמונות
         );
-        setFormData(prev => ({
-            ...prev,
-            additionalImages: compressedImages,
+        setFormData((prev) => ({
+          ...prev,
+          additionalImages: [...prev.additionalImages, ...compressedImages], // הוספת התמונות החדשות למערך
         }));
-    };
+      };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsUploading(true);
-        
+
         const data = new FormData();
         data.append('scriptType', formData.scriptType);
         data.append('scrollType', formData.scrollType);
@@ -77,7 +94,7 @@ const AddProduct = () => {
             const response = await fetch('http://localhost:5000/productsApi/addProduct', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OGJmNDBkYzg5MTUxNzVhZDQxYjFhOCIsImVtYWlsIjoiVDA1MjcxNDQ2MzZAZ21haWwuY29tIiwiaWF0IjoxNzM3Mjg3MDcyLCJleHAiOjE3MzcyOTA2NzJ9.x7JjyLro1MPH7On5Ug2OiAccGf4I5tTp34s-wHWvASI`
+                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OGJmNDBkYzg5MTUxNzVhZDQxYjFhOCIsImVtYWlsIjoiVDA1MjcxNDQ2MzZAZ21haWwuY29tIiwiaWF0IjoxNzM3MzE1NzY5LCJleHAiOjE3MzczMTkzNjl9.dRWtYoLznfypJeKh_z8F_PHYSEo-4WN1GWBEKJJ2CBI`
                 },
                 body: data,
                 onUploadProgress: (progressEvent) => {
@@ -109,71 +126,146 @@ const AddProduct = () => {
     };
 
     return (
-        <div className="add-product-container">
-            <h2>הוספת מוצר חדש</h2>
-            <form onSubmit={handleSubmit} className="add-product-form">
-                <div className="form-group">
-                    <label>סוג כתב:</label>
-                    <select name="scriptType" value={formData.scriptType} onChange={handleChange} required>
-                        <option value="">בחר סוג כתב</option>
-                        <option value="בית יוסף">בית יוסף</option>
-                        <option value="ספרדי">ספרדי</option>
-                    </select>
-                </div>
+        <Container maxWidth="sm" style={{ marginTop: '20px' }}>
+            <Typography variant="h4" gutterBottom>
+                הוספת מוצר חדש
+            </Typography>
 
-                <div className="form-group">
-                    <label>סוג ספר תורה:</label>
-                    <select name="scrollType" value={formData.scrollType} onChange={handleChange} required>
-                        <option value="">בחר סוג ספר תורה</option>
-                        <option value="11 שורות">11 שורות</option>
-                        <option value="המלך">המלך</option>
-                    </select>
-                </div>
+            <form onSubmit={handleSubmit}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel>סוג כתב</InputLabel>
+                            <Select
+                                name="scriptType"
+                                value={formData.scriptType}
+                                onChange={handleChange}
+                                required
+                            >
+                                <MenuItem value="בית יוסף">בית יוסף</MenuItem>
+                                <MenuItem value="ספרדי">ספרדי</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                <div className="form-group">
-                    <label>מחיר:</label>
-                    <input type="number" name="price" value={formData.price} onChange={handleChange} required />
-                </div>
+                    <Grid item xs={12}>
+                        <FormControl fullWidth>
+                            <InputLabel>סוג ספר תורה</InputLabel>
+                            <Select
+                                name="scrollType"
+                                value={formData.scrollType}
+                                onChange={handleChange}
+                                required
+                            >
+                                <MenuItem value="11 שורות">11 שורות</MenuItem>
+                                <MenuItem value="המלך">המלך</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                <div className="form-group">
-                    <label>תמונה ראשית:</label>
-                    <input type="file" accept="image/*" onChange={handlePrimaryImageChange} required />
-                </div>
-
-                <div className="form-group">
-                    <label>תמונות נוספות:</label>
-                    <input type="file" accept="image/*" multiple onChange={handleAdditionalImagesChange} />
-                </div>
-
-                <div className="form-group">
-                    <label>הערות:</label>
-                    <textarea name="note" value={formData.note} onChange={handleChange} />
-                </div>
-
-                <div className="form-group">
-                    <label>
-                        <input
-                            type="checkbox"
-                            name="isPremiumAd"
-                            checked={formData.isPremiumAd}
+                    <Grid item xs={12}>
+                        <TextField
+                            label="מחיר"
+                            type="number"
+                            name="price"
+                            value={formData.price}
                             onChange={handleChange}
+                            fullWidth
+                            required
                         />
-                        מודעה מקודמת
-                    </label>
-                </div>
+                    </Grid>
 
-                {uploadProgress > 0 && (
-                    <div className="progress-bar">
-                        <div style={{ width: `${uploadProgress}%` }}></div>
-                        <span>{uploadProgress}%</span>
-                    </div>
-                )}
+                    <Grid item xs={12}>
+                        <label htmlFor="primary-image-upload">
+                            <input
+                                id="primary-image-upload"
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePrimaryImageChange}
+                                required
+                                style={{ display: 'none' }} // מחביא את שדה הקובץ
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<CloudUploadIcon />}
+                                component="span"
+                            >
+                                הוסף תמונה ראשית
+                            </Button>
+                        </label>
+                    </Grid>
 
-                <button type="submit" disabled={isUploading}>
-                    {isUploading ? 'מעלה...' : 'הוסף מוצר'}
-                </button>
+
+                    <Grid item xs={12}>
+                        <label htmlFor="additional-images-upload">
+                            <input
+                                id="additional-images-upload"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={handleAdditionalImagesChange}
+                                style={{ display: 'none' }} // הסתרת השדה
+                            />
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                startIcon={<CloudUploadIcon />}
+                                component="span"
+                            >
+                                העלה תמונות נוספות
+                            </Button>
+                        </label>
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <TextField
+                            label="הערות"
+                            name="note"
+                            value={formData.note}
+                            onChange={handleChange}
+                            fullWidth
+                            multiline
+                            rows={4}
+                        />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    name="isPremiumAd"
+                                    checked={formData.isPremiumAd}
+                                    onChange={handleChange}
+                                />
+                            }
+                            label="מודעה מקודמת"
+                        />
+                    </Grid>
+
+                    {uploadProgress > 0 && (
+                        <Grid item xs={12}>
+                            <LinearProgress variant="determinate" value={uploadProgress} />
+                            <Box textAlign="center" marginTop="8px">
+                                <Typography>{uploadProgress}%</Typography>
+                            </Box>
+                        </Grid>
+                    )}
+
+                    <Grid item xs={12}>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            disabled={isUploading}
+                        >
+                            {isUploading ? <CircularProgress size={24} /> : 'הוסף מוצר'}
+                        </Button>
+                    </Grid>
+                </Grid>
             </form>
-        </div>
+        </Container>
     );
 };
 
