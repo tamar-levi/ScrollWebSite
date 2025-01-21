@@ -94,7 +94,7 @@ const AddProduct = () => {
             const response = await fetch('http://localhost:5000/productsApi/addProduct', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3OGJmNDBkYzg5MTUxNzVhZDQxYjFhOCIsImVtYWlsIjoiVDA1MjcxNDQ2MzZAZ21haWwuY29tIiwiaWF0IjoxNzM3MzE1NzY5LCJleHAiOjE3MzczMTkzNjl9.dRWtYoLznfypJeKh_z8F_PHYSEo-4WN1GWBEKJJ2CBI`
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 },
                 body: data,
                 onUploadProgress: (progressEvent) => {

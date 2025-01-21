@@ -18,7 +18,7 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const ProductDisplay = () => {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null); // המוצר שנבחר להרחבה
+  const [selectedProduct, setSelectedProduct] = useState(null); 
 
   useEffect(() => {
     const fetchProducts = async () => {

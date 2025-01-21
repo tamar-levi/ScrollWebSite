@@ -16,7 +16,7 @@ const sendWelcomeEmail = async (email, fullName) => {
         refresh_token: refreshToken 
     });
 
-   
+    const accessToken = await oauth2Client.getAccessToken();
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
