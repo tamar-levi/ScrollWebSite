@@ -61,15 +61,15 @@ const AddProduct = () => {
     };
 
     const handleAdditionalImagesChange = async (e) => {
-        const files = Array.from(e.target.files); // המרת הקבצים למערך
+        const files = Array.from(e.target.files);
         const compressedImages = await Promise.all(
-          files.map((file) => compressImage(file)) // כיווץ התמונות
+            files.map((file) => compressImage(file))
         );
         setFormData((prev) => ({
-          ...prev,
-          additionalImages: [...prev.additionalImages, ...compressedImages], // הוספת התמונות החדשות למערך
+            ...prev,
+            additionalImages: [...prev.additionalImages, ...compressedImages],
         }));
-      };
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -97,12 +97,6 @@ const AddProduct = () => {
                     'Authorization': 'Bearer ' + localStorage.getItem('token'),
                 },
                 body: data,
-                onUploadProgress: (progressEvent) => {
-                    const percentCompleted = Math.round(
-                        (progressEvent.loaded * 100) / progressEvent.total
-                    );
-                    setUploadProgress(percentCompleted);
-                }
             });
 
             if (response.ok) {
@@ -126,8 +120,8 @@ const AddProduct = () => {
     };
 
     return (
-        <Container maxWidth="sm" style={{ marginTop: '20px' }}>
-            <Typography variant="h4" gutterBottom>
+        <Container maxWidth="sm" sx={{ marginTop: 4, direction: 'rtl', fontFamily: 'Roboto, sans-serif' }}>
+            <Typography variant="h4" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif' }}>
                 הוספת מוצר חדש
             </Typography>
 
@@ -135,12 +129,13 @@ const AddProduct = () => {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel>סוג כתב</InputLabel>
+                            <InputLabel sx={{ color: 'black', textAlign: 'right', fontFamily: 'Roboto, sans-serif' }}>סוג כתב</InputLabel>
                             <Select
                                 name="scriptType"
                                 value={formData.scriptType}
                                 onChange={handleChange}
                                 required
+                                sx={{ borderColor: 'black', fontFamily: 'Roboto, sans-serif' }}
                             >
                                 <MenuItem value="בית יוסף">בית יוסף</MenuItem>
                                 <MenuItem value="ספרדי">ספרדי</MenuItem>
@@ -150,12 +145,13 @@ const AddProduct = () => {
 
                     <Grid item xs={12}>
                         <FormControl fullWidth>
-                            <InputLabel>סוג ספר תורה</InputLabel>
+                            <InputLabel sx={{ color: 'black', textAlign: 'right', fontFamily: 'Roboto, sans-serif' }}>סוג ספר תורה</InputLabel>
                             <Select
                                 name="scrollType"
                                 value={formData.scrollType}
                                 onChange={handleChange}
                                 required
+                                sx={{ borderColor: 'black', fontFamily: 'Roboto, sans-serif' }}
                             >
                                 <MenuItem value="11 שורות">11 שורות</MenuItem>
                                 <MenuItem value="המלך">המלך</MenuItem>
@@ -172,10 +168,18 @@ const AddProduct = () => {
                             onChange={handleChange}
                             fullWidth
                             required
+                            InputLabelProps={{
+                                style: { color: 'black', textAlign: 'right' },
+                                shrink: true,
+                            }}
+                            sx={{ borderColor: 'black', fontFamily: 'Roboto, sans-serif' }}
+                            inputProps={{
+                                min: 100, // הגדרת מינימום 100
+                            }}
                         />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <label htmlFor="primary-image-upload">
                             <input
                                 id="primary-image-upload"
@@ -183,21 +187,18 @@ const AddProduct = () => {
                                 accept="image/*"
                                 onChange={handlePrimaryImageChange}
                                 required
-                                style={{ display: 'none' }} // מחביא את שדה הקובץ
+                                style={{ display: 'none' }}
                             />
                             <Button
-                                variant="contained"
-                                color="primary"
-                                startIcon={<CloudUploadIcon />}
+                                variant="outlined"
+                                sx={{ color: 'black', borderColor: 'black', margin: '0 8px', fontFamily: 'Roboto, sans-serif' }}
+                                startIcon={<CloudUploadIcon sx={{ marginLeft: '8px' }} />}
                                 component="span"
                             >
                                 הוסף תמונה ראשית
                             </Button>
                         </label>
-                    </Grid>
 
-
-                    <Grid item xs={12}>
                         <label htmlFor="additional-images-upload">
                             <input
                                 id="additional-images-upload"
@@ -205,12 +206,12 @@ const AddProduct = () => {
                                 accept="image/*"
                                 multiple
                                 onChange={handleAdditionalImagesChange}
-                                style={{ display: 'none' }} // הסתרת השדה
+                                style={{ display: 'none' }}
                             />
                             <Button
                                 variant="outlined"
-                                color="secondary"
-                                startIcon={<CloudUploadIcon />}
+                                sx={{ color: 'black', borderColor: 'black', margin: '0 8px', fontFamily: 'Roboto, sans-serif' }}
+                                startIcon={<CloudUploadIcon sx={{ marginLeft: '8px' }} />}
                                 component="span"
                             >
                                 העלה תמונות נוספות
@@ -227,6 +228,11 @@ const AddProduct = () => {
                             fullWidth
                             multiline
                             rows={4}
+                            InputLabelProps={{
+                                style: { color: 'black', textAlign: 'right' },
+                                shrink: true,
+                            }}
+                            sx={{ borderColor: 'black', fontFamily: 'Roboto, sans-serif' }}
                         />
                     </Grid>
 
@@ -237,9 +243,11 @@ const AddProduct = () => {
                                     name="isPremiumAd"
                                     checked={formData.isPremiumAd}
                                     onChange={handleChange}
+                                    sx={{ color: 'black' }}
                                 />
                             }
-                            label="מודעה מקודמת"
+                            label="מודעה פרימיום"
+                            sx={{ fontFamily: 'Roboto, sans-serif' }}
                         />
                     </Grid>
 
@@ -256,7 +264,7 @@ const AddProduct = () => {
                         <Button
                             type="submit"
                             variant="contained"
-                            color="primary"
+                            sx={{ backgroundColor: 'black', color: 'white', margin: '0 auto', fontFamily: 'Roboto, sans-serif' }}
                             fullWidth
                             disabled={isUploading}
                         >

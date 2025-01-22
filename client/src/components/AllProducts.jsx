@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // עבור ניווט
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick';
@@ -19,6 +20,7 @@ import 'slick-carousel/slick/slick-theme.css';
 const ProductDisplay = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null); 
+  const navigate = useNavigate(); // ניווט
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,33 +54,46 @@ const ProductDisplay = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', padding: '16px' }}>
-      {products.map((product) => (
-        <Card key={product._id} style={{ width: '300px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
-          {/* תמונה ראשית */}
-          <img
-            src={`data:image/jpeg;base64,${product.primaryImage}`}
-            alt={product.scriptType}
-            style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px 4px 0 0' }}
-          />
+    <div style={{ padding: '16px' }}>
+      {/* כפתור הוספת מוצר */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate('/addProduct')}
+        style={{ marginBottom: '16px' }}
+      >
+        הוסף מוצר חדש
+      </Button>
 
-          {/* פרטים בסיסיים */}
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              {product.scrollType} - {product.scriptType}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" style={{ marginBottom: '8px' }}>
-              {product.note ? product.note : 'אין הערות'}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              מחיר: {product.price} ₪
-            </Typography>
-            <Button onClick={() => handleOpenModal(product)} variant="outlined" color="primary" fullWidth>
-              פרטים נוספים
-            </Button>
-          </CardContent>
-        </Card>
-      ))}
+      {/* מוצרים */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+        {products.map((product) => (
+          <Card key={product._id} style={{ width: '300px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
+            {/* תמונה ראשית */}
+            <img
+              src={`data:image/jpeg;base64,${product.primaryImage}`}
+              alt={product.scriptType}
+              style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px 4px 0 0' }}
+            />
+
+            {/* פרטים בסיסיים */}
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                {product.scrollType} - {product.scriptType}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" style={{ marginBottom: '8px' }}>
+                {product.note ? product.note : 'אין הערות'}
+              </Typography>
+              <Typography variant="body2" color="textSecondary">
+                מחיר: {product.price} ₪
+              </Typography>
+              <Button onClick={() => handleOpenModal(product)} variant="outlined" color="primary" fullWidth>
+                פרטים נוספים
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
       {/* מודל להצגת פרטים נוספים */}
       {selectedProduct && (
