@@ -1,11 +1,10 @@
 import React from 'react';
-import ProductDisplay from './components/AllProducts';
 import AddProduct from './components/AddProduct';
 import CreateUser from './components/CreateUser';
 import GoogleAuth from './components/GoogleAuth';
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-
+import ProductList from './components/ProductList';
 function App() {
   return (
     <Router>
@@ -23,10 +22,9 @@ function App() {
           <CreateUser />
         </Box>
         <Routes>
-          
           <Route path="/" element={<GoogleAuth />} />
           <Route path="/" element={<CreateUser />} />
-          <Route path="/products" element={<ProductDisplay />} />
+          <Route path="/products" element={<ProductList />} />
           <Route path="/addProduct" element={<AddProduct />} />
         </Routes>
       </div>

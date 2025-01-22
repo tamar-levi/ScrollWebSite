@@ -1,0 +1,43 @@
+.product-card {
+    direction: rtl;
+    font-family: 'Rubik', sans-serif !important;
+  }
+  
+  .product-card-content {
+    text-align: right;
+  }
+  
+  body {
+    font-family: 'Rubik', sans-serif;
+  }
+  
+  .MuiTypography-root {
+    font-family: 'Rubik', sans-serif !important;
+  }
+  
+  .product-title {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .product-note {
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+  }
+  
+  .product-price {
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+  }
+  
+  .product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .details-button {
+    width: 100%;
+    margin-top: 16px;
+  }
