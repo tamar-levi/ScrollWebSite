@@ -48,6 +48,7 @@ const addUser = async (req, res) => {
         res.json({
             message: 'User created successfully',
             token: token,
+            user: newUser
         });
     } catch (err) {
         console.error('Error creating user', err);
@@ -91,6 +92,7 @@ const loginUser = async (req, res) => {
         res.json({
             message: 'Login successful',
             token: token,
+            user: user
         });
     } catch (err) {
         console.error('Error logging in', err);
@@ -132,7 +134,7 @@ const handleGoogleLogin = async (req, res) => {
                 email: googleUserInfo.email,
                 fullName: googleUserInfo.name,
                 displayName: googleUserInfo.given_name,
-                phoneNumber: 0,  // מספר במקום מחרוזת
+                phoneNumber: 0,
                 city: 'לא צוין',
                 isSeller: false,
                 password: require('crypto').randomBytes(16).toString('hex')
@@ -144,7 +146,8 @@ const handleGoogleLogin = async (req, res) => {
         
         res.json({
             message: 'Google login successful',
-            token
+            token,
+            user: user
         });
     } catch (err) {
         console.error('Google login error:', err);
@@ -152,5 +155,20 @@ const handleGoogleLogin = async (req, res) => {
     }
 };
 
+const getUserById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        res.json(user);
+    } catch (err) {
+        console.error('Error fetching user by ID', err);
+        res.status(500).json({ message: 'Database error' });
+    }
+}
 
-module.exports = { getAllUsers, getCurrentUser, addUser, updateUserDetails, loginUser, deleteUser, handleGoogleLogin };
+module.exports = { getAllUsers, getCurrentUser, addUser, updateUserDetails, loginUser, deleteUser, handleGoogleLogin, getUserById };

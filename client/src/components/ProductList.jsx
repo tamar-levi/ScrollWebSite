@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,21 +38,13 @@ const ProductList = () => {
       margin: '0 auto',
       justifyContent: 'center'
     }}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate('/addProduct')}
-        style={{ marginBottom: '16px', width: '100%', fontFamily: 'Georgia, sans-serif' }}
-      >
-        הוסף מוצר חדש
-      </Button>
-
       {products.map((product) => (
         <div style={{ 
-          width: 'calc(33.33% - 22px)', 
+          width: 'calc(33.33% - 22px)',
           marginBottom: '32px'
-        }} key={product._id}>
+        }}>
           <ProductCard 
+            key={product._id} 
             product={product} 
             onOpenModal={handleOpenModal}
           />
