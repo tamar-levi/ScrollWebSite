@@ -3,12 +3,12 @@ import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import AddProduct from './AddProduct'; // קומפוננטת ההוספה
+import AddProduct from './AddProduct'; 
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false); // מצב חלונית ההוספה
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false); 
 
   useEffect(() => {
     const fetchProducts = async () => {

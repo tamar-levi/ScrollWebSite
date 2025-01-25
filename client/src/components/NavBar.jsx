@@ -8,6 +8,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import AccountMenu from './AccountMenu';
 import { useTheme } from '@mui/material/styles';
+import { Link } from 'react-router-dom'; // הוספת ייבוא של Link מ- react-router-dom
 
 export default function NavBar({ user }) {
   const theme = useTheme();
@@ -45,9 +46,12 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
+            // component={Link} // שינוי לכפתור קישור
+            // to="/contact" // קישור לעמוד צור קשר
           >
             צור קשר
           </Button>
+
           <Button 
             sx={{ 
               color: theme.palette.primary.main,
@@ -58,6 +62,8 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
+            component={Link} // שינוי לכפתור קישור
+            to="/about" // קישור לעמוד אודות
           >
             אודות
           </Button>
@@ -115,6 +121,8 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
+            component={Link} // שינוי לכפתור קישור
+            to="/" // קישור לעמוד הבית
           >
             בית
           </Button>

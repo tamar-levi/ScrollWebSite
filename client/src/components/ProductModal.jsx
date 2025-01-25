@@ -7,9 +7,13 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import DrawIcon from '@mui/icons-material/Draw';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import SellerDetailsModal from './SellerDetailsModal';
+import AddCardIcon from '@mui/icons-material/AddCard';
+import { useNavigate } from 'react-router-dom';
+import PaymentForm from './PaymentForm.tsx';  
 
 const ProductModal = ({ product, onClose }) => {
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);  
 
   const buttonStyle = {
     border: '1px solid #1976d2',
@@ -24,12 +28,16 @@ const ProductModal = ({ product, onClose }) => {
     fontWeight: 500,
     '& .MuiButton-endIcon': {
       marginRight: '4px',
-      marginLeft: '-4px'
-    }
+      marginLeft: '-4px',
+    },
   };
 
   const handleSellerDetailsClick = () => {
     setIsSellerModalOpen(true);
+  };
+
+  const handlePayClick = () => {
+    setOpenPaymentModal(true);  
   };
 
   const handleSellerModalClose = () => {
@@ -38,23 +46,12 @@ const ProductModal = ({ product, onClose }) => {
 
   return (
     <>
-      <Dialog
-        open={true}
-        onClose={onClose}
-        maxWidth="sm"
-        fullWidth
-        dir="rtl"
-      >
+      <Dialog open={true} onClose={onClose} maxWidth="sm" fullWidth dir="rtl">
         <DialogTitle sx={{ textAlign: 'right' }}>
           {product.title}
         </DialogTitle>
         <DialogContent>
-          <Box
-            display="flex"
-            flexDirection="column"
-            gap={2}
-            sx={{ textAlign: 'right' }}
-          >
+          <Box display="flex" flexDirection="column" gap={2} sx={{ textAlign: 'right' }}>
             <ImageSlider images={[product.primaryImage, ...product.additionalImages]} />
             <Typography variant="body1" paragraph>
               {product.note}
@@ -71,30 +68,27 @@ const ProductModal = ({ product, onClose }) => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ padding: 2, gap: 2 }}>
-          <Button
-            variant="outlined"
-            sx={{ ...buttonStyle }}
-            endIcon={<PersonIcon />}
-            onClick={handleSellerDetailsClick}
-          >
+          <Button variant="outlined" sx={{ ...buttonStyle }} endIcon={<AddCardIcon />} onClick={handlePayClick}>
+            לתשלום
+          </Button>
+          <Button variant="outlined" sx={{ ...buttonStyle }} endIcon={<PersonIcon />} onClick={handleSellerDetailsClick}>
             פרטי המוכר
           </Button>
-          <Button
-            onClick={onClose}
-            variant="outlined"
-            sx={{ ...buttonStyle }}
-            endIcon={<CloseIcon />}
-          >
+          <Button onClick={onClose} variant="outlined" sx={{ ...buttonStyle }} endIcon={<CloseIcon />}>
             סגור
           </Button>
         </DialogActions>
       </Dialog>
 
-      <SellerDetailsModal
-        sellerId={product.userId}
-        isOpen={isSellerModalOpen}
-        onClose={handleSellerModalClose}
-      />
+      <SellerDetailsModal sellerId={product.userId} isOpen={isSellerModalOpen} onClose={handleSellerModalClose} />
+
+      
+      <Dialog open={openPaymentModal} onClose={() => setOpenPaymentModal(false)} maxWidth="sm" fullWidth>
+        <PaymentForm 
+          product={product}  
+          onClose={() => setOpenPaymentModal(false)} 
+        />
+      </Dialog>
     </>
   );
 };
