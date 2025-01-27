@@ -1,39 +1,136 @@
-.App {
-  text-align: center;
-  direction: rtl;
+/* עיצוב כללי */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.product-page {
   display: flex;
-  flex-direction: column;
+  flex-wrap: nowrap;
+  padding: 20px;
+}
+
+/* עיצוב המוצרים */
+.product-list {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 60px; /* רווחים גדולים בין התמונות */
+  justify-content: center; /* תמונות ממורכזות */
+  padding-right: 40px; /* רווח שווה בצדדים */
+  padding-left: 40px; /* רווח שווה בצדדים */
+}
+
+/* עיצוב הסינונים */
+.filter-section {
+  flex: 0 0 250px; /* הגדלתי את הרוחב של המלבן */
+  margin-left: 30px; /* רווח קטן בין הסינון לתמונות */
+  position: relative;
+}
+
+/* עיצוב של הודעת שגיאה */
+.no-products-message {
+  color: #ff0000;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+  position: absolute; /* מוודא שההודעה לא תשפיע על הפריסה */
+  bottom: 10px; /* נשארת בתחתית של ה-filter-section */
+  width: 100%;
+}
+
+/* עיצוב המלבן */
+.filter-container {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  height: 100%; /* גובה מלא */
+  position: sticky;
+  top: 0;
+}
+
+.filter-container h3 {
+  margin-bottom: 15px;
+  text-align: right;
+}
+
+.filter-container h4 {
+  text-align: right;
+}
+
+/* עיצוב אפשרויות הסינון */
+.filter-container label {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: flex-start; /* כיוונון ימין-שמאל */
+  margin-bottom: 10px;
+  gap: 10px; /* רווח בין העיגול לטקסט */
+  text-align: right;
+  direction: rtl; /* שפה מימין לשמאל */
 }
 
-.App-link {
-  color: #61dafb;
+.filter-container input[type="radio"] {
+  margin-left: 10px; /* רווח בין הטקסט לעיגול */
+  margin-right: 0; /* ביטול רווח מצד ימין */
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* עיצוב הסליידר */
+.filter-price {
+  text-align: right; /* מוודא שהכותרת מיושרת לימין */
+}
+
+.price-range-slider {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.price-value {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* כפתור סינון */
+.filter-container button {
+  background-color: transparent; /* צבע רקע שקוף */
+  color: #00bfff; /* צבע הטקסט יהיה תכלת */
+  border: 2px solid #00bfff; /* מסגרת בצבע תכלת */
+  padding: 10px 20px; /* רווחים פנימיים */
+  font-size: 16px; /* גודל גופן */
+  cursor: pointer; /* מצביע של עכבר לשם אינטראקטיביות */
+  transition: background-color 0.3s, color 0.3s; /* אפקט מעבר */
+  border-radius: 15px; /* פינות עגולות לכפתור */
+  text-align: center; /* מיושר במרכז */
+  display: block; /* הכפתור יקבל את המאפיין block */
+  margin-left: auto; /* דוחף את הכפתור לימין */
+  margin-right: 0; /* מבטל את הרווח מצד ימין */
+}
+
+.filter-container button:hover {
+  background-color: #00bfff; /* צבע רקע תכלת בהעברה */
+  color: white; /* טקסט בצבע לבן כשמעבירים את העכבר */
+}
+
+/* מסכים קטנים */
+@media (max-width: 768px) {
+  .product-list > div {
+    flex: 1 0 calc(50% - 30px); /* ריווח גדול יותר בין התמונות */
   }
-  to {
-    transform: rotate(360deg);
+
+  .filter-section {
+    flex: 1 0 100%;
+    margin-top: 20px;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-list > div {
+    flex: 1 0 100%; 
   }
 }

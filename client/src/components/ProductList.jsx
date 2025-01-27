@@ -1,108 +1,78 @@
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import AddProduct from './AddProduct'; 
+import FilterComponent from './FilterComponent';
+import '../App.css';
 
 const ProductList = () => {
-  const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false); 
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [noProductsFound, setNoProductsFound] = useState(false);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/productsApi/getAllProducts');
-        const data = await response.json();
-        setProducts(data);
-      } catch (error) {
-        console.error('Failed to fetch products:', error);
-      }
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/productsApi/getAllProducts');
+                const data = await response.json();
+                setProducts(data);
+                setFilteredProducts(data);
+                setNoProductsFound(false);
+            } catch (error) {
+                console.error('Failed to fetch products:', error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
+
+    const applyFilters = (currentFilters) => {
+        console.log('Applying filters:', currentFilters);  // Debugging log
+        const filtered = products.filter((product) => {
+            const matchesCategory =
+                !currentFilters.category || product.category === currentFilters.category;
+            const matchesWritingType =
+                !currentFilters.writingType || product.writingType === currentFilters.writingType;
+
+            let matchesPrice = true;
+            if (currentFilters.priceRange && currentFilters.priceRange.min !== undefined && currentFilters.priceRange.max !== undefined) {
+                matchesPrice = product.price >= currentFilters.priceRange.min && product.price <= currentFilters.priceRange.max;
+            }
+
+            return matchesCategory && matchesWritingType && matchesPrice;
+        });
+        console.log('Filtered products:', filtered);  // Debugging log
+        setFilteredProducts(filtered);
+        setNoProductsFound(filtered.length === 0);
     };
 
-    fetchProducts();
-  }, []);
+    const handleOpenModal = (product) => {
+        setSelectedProduct(product);
+    };
 
-  const handleOpenAddProductModal = () => {
-    setIsAddProductModalOpen(true);
-  };
+    const handleCloseModal = () => {
+        setSelectedProduct(null);
+    };
 
-  const handleCloseAddProductModal = () => {
-    setIsAddProductModalOpen(false);
-  };
-
-  const handleOpenModal = (product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-  };
-
-  return (
-    <>
-      <Stack spacing={2} direction="row">
-        <Button variant="outlined" onClick={handleOpenAddProductModal}>
-          להוספת מוצר
-        </Button>
-      </Stack>
-
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '10px',
-          padding: '20px',
-          maxWidth: '1200px',
-          margin: '0 auto',
-          justifyContent: 'center',
-        }}
-      >
-        {products.map((product) => (
-          <div
-            style={{
-              width: 'calc(33.33% - 22px)',
-              marginBottom: '32px',
-            }}
-          >
-            <ProductCard key={product._id} product={product} onOpenModal={handleOpenModal} />
-          </div>
-        ))}
-
-        {selectedProduct && <ProductModal product={selectedProduct} onClose={handleCloseModal} />}
-
-        {isAddProductModalOpen && (
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000,
-            }}
-          >
-            <div
-              style={{
-                background: 'white',
-                padding: '20px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                minWidth: '300px',
-              }}
-            >
-              <AddProduct onClose={handleCloseAddProductModal} />
+    return (
+        <div className="product-page">
+            <div className="product-list">
+                {filteredProducts.length > 0
+                    ? filteredProducts.map((product) => (
+                        <ProductCard key={product._id} product={product} onOpenModal={handleOpenModal} />
+                    ))
+                    : products.map((product) => (
+                        <ProductCard key={product._id} product={product} onOpenModal={handleOpenModal} />
+                    ))
+                }
+                {selectedProduct && <ProductModal product={selectedProduct} onClose={handleCloseModal} />}
             </div>
-          </div>
-        )}
-      </div>
-    </>
-  );
+            <div className="filter-section">
+                <FilterComponent applyFilters={applyFilters} />
+                {noProductsFound && <p className="no-products-message">לא נמצאו מוצרים התואמים לסינון שבחרת.</p>}
+            </div>
+        </div>
+    );
 };
 
 export default ProductList;
