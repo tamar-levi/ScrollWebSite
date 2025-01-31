@@ -4,37 +4,51 @@ const productSchema = new mongoose.Schema({
     scriptType: {
         type: String,
         required: true,
-        enum: ['בית יוסף', 'האר"י', 'ספרדי'] 
+        enum: [
+            "בית יוסף",
+            "האר''י",
+            "ספרדי (וועליש)",
+            "חב''ד",
+            "תימני",
+            "אחר"
+        ]
     },
     scrollType: {
         type: String,
         required: true,
-        enum: ['11 שורות', 'המלך'] 
+        enum: [
+            "המלך 28 שורות",
+            "המלך 21 שורות",
+            "11 שורות",
+            "42 שורות",
+            "11 שורות הרב עובדיה",
+            "אחר"
+        ]
     },
     price: {
         type: Number,
         required: true
     },
     primaryImage: {
-        type: String, // URL או נתיב לתמונה
+        type: String, 
         required: true
     },
     additionalImages: {
-        type: [String], 
+        type: [String],
         required: false
     },
     note: {
         type: String,
-        maxlength: 300 
+        maxlength: 300
     },
     isPremiumAd: {
         type: Boolean,
-        default: false 
+        default: false
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true 
+        required: true
     }
 })
 

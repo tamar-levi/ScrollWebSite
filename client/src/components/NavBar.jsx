@@ -4,13 +4,12 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import AccountMenu from './AccountMenu';
 import { useTheme } from '@mui/material/styles';
-import { Link } from 'react-router-dom'; 
+import { Link } from 'react-router-dom';
 
-export default function NavBar({ user }) {
+
+export default function NavBar() {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -18,26 +17,14 @@ export default function NavBar({ user }) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const productCategories = [
-    'מגילות קלף',
-    'ספרי תורה',
-    'תפילין',
-    'מזוזות'
-  ];
-
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', boxShadow: 1 }}>
+    <AppBar position="fixed" sx={{ backgroundColor: 'white', boxShadow: 1 }}>
       <Toolbar>
-        <AccountMenu user={user} color={theme.palette.primary.main} />
+        <AccountMenu color={theme.palette.primary.main} />
         <Box sx={{ flexGrow: 1 }} />
-        
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-          <Button 
-            sx={{ 
+          <Button
+            sx={{
               color: theme.palette.primary.main,
               fontFamily: 'Rubik, sans-serif',
               fontSize: '1rem',
@@ -46,13 +33,11 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
-            
           >
             צור קשר
           </Button>
-
-          <Button 
-            sx={{ 
+          <Button
+            sx={{
               color: theme.palette.primary.main,
               fontFamily: 'Rubik, sans-serif',
               fontSize: '1rem',
@@ -61,15 +46,14 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
-            component={Link} // שינוי לכפתור קישור
-            to="/about" // קישור לעמוד אודות
+            component={Link}
+            to="/about"
           >
             אודות
           </Button>
-          
-          <Button 
+          <Button
             onMouseEnter={handleMouseEnter}
-            sx={{ 
+            sx={{
               color: theme.palette.primary.main,
               fontFamily: 'Rubik, sans-serif',
               fontSize: '1rem',
@@ -78,40 +62,13 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
+            component={Link}
+            to="/products"
           >
             מוצרים
           </Button>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-            MenuListProps={{ 
-              onMouseLeave: handleClose,
-              sx: { direction: 'rtl' }
-            }}
-            sx={{ 
-              '& .MuiPaper-root': {
-                marginTop: '8px',
-                minWidth: '150px'
-              }
-            }}
-          >
-            {productCategories.map((category) => (
-              <MenuItem 
-                key={category}
-                onClick={handleClose}
-                sx={{ 
-                  fontFamily: 'Rubik, sans-serif',
-                  fontSize: '0.9rem',
-                }}
-              >
-                {category}
-              </MenuItem>
-            ))}
-          </Menu>
-
-          <Button 
-            sx={{ 
+          <Button
+            sx={{
               color: theme.palette.primary.main,
               fontFamily: 'Rubik, sans-serif',
               fontSize: '1rem',
@@ -120,15 +77,14 @@ export default function NavBar({ user }) {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
-            component={Link} // שינוי לכפתור קישור
-            to="/" // קישור לעמוד הבית
+            component={Link}
+            to="/"
           >
             בית
           </Button>
-          
-          <Typography 
-            variant="h6" 
-            sx={{ 
+          <Typography
+            variant="h6"
+            sx={{
               color: theme.palette.primary.main,
               fontFamily: 'Rubik, sans-serif',
               fontWeight: 500

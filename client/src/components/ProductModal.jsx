@@ -7,13 +7,9 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import DrawIcon from '@mui/icons-material/Draw';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import SellerDetailsModal from './SellerDetailsModal';
-import AddCardIcon from '@mui/icons-material/AddCard';
-import { useNavigate } from 'react-router-dom';
-import PaymentForm from './PaymentForm.tsx';  
 
 const ProductModal = ({ product, onClose }) => {
   const [isSellerModalOpen, setIsSellerModalOpen] = useState(false);
-  const [openPaymentModal, setOpenPaymentModal] = useState(false);  
 
   const buttonStyle = {
     border: '1px solid #1976d2',
@@ -34,10 +30,6 @@ const ProductModal = ({ product, onClose }) => {
 
   const handleSellerDetailsClick = () => {
     setIsSellerModalOpen(true);
-  };
-
-  const handlePayClick = () => {
-    setOpenPaymentModal(true);  
   };
 
   const handleSellerModalClose = () => {
@@ -68,9 +60,6 @@ const ProductModal = ({ product, onClose }) => {
           </Box>
         </DialogContent>
         <DialogActions sx={{ padding: 2, gap: 2 }}>
-          <Button variant="outlined" sx={{ ...buttonStyle }} endIcon={<AddCardIcon />} onClick={handlePayClick}>
-            לתשלום
-          </Button>
           <Button variant="outlined" sx={{ ...buttonStyle }} endIcon={<PersonIcon />} onClick={handleSellerDetailsClick}>
             פרטי המוכר
           </Button>
@@ -79,16 +68,7 @@ const ProductModal = ({ product, onClose }) => {
           </Button>
         </DialogActions>
       </Dialog>
-
       <SellerDetailsModal sellerId={product.userId} isOpen={isSellerModalOpen} onClose={handleSellerModalClose} />
-
-      
-      <Dialog open={openPaymentModal} onClose={() => setOpenPaymentModal(false)} maxWidth="sm" fullWidth>
-        <PaymentForm 
-          product={product}  
-          onClose={() => setOpenPaymentModal(false)} 
-        />
-      </Dialog>
     </>
   );
 };

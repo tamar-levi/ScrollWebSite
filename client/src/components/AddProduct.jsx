@@ -1,38 +1,48 @@
 import React, { useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import CloseIcon from '@mui/icons-material/Close';
 import {
-    Container,
+    Box,
     TextField,
     Button,
     Checkbox,
     FormControlLabel,
-    CircularProgress,
-    Box,
-    Typography,
     Grid,
-    Select,
-    MenuItem,
     InputLabel,
     FormControl,
-    IconButton,
-    Dialog,
+    Select,
+    MenuItem,
+    Alert,
 } from '@mui/material';
 
-const AddProduct = ({ onClose }) => {
+
+const AddProduct = ({ onNext, onFormSubmit, productData }) => {
     const [formData, setFormData] = useState({
-        scriptType: '',
-        scrollType: '',
-        price: '',
-        primaryImage: null,
-        additionalImages: [],
-        note: '',
-        isPremiumAd: true,
+        scriptType: productData ? productData.scriptType : '',
+        scrollType: productData ? productData.scrollType : '',
+        price: productData ? productData.price : '',
+        primaryImage: productData ? productData.primaryImage : null,
+        additionalImages: productData ? productData.additionalImages : [],
+        note: productData ? productData.note : '',
+        isPremiumAd: productData ? productData.isPremiumAd : false,
     });
-
-    const [isUploading, setIsUploading] = useState(false);
-
+    const [showAlert, setShowAlert] = useState(false);
+    const scriptTypes = [
+        "בית יוסף",
+        "האר''י",
+        "ספרדי (וועליש)",
+        "חב''ד",
+        "תימני",
+        "אחר"
+    ];
+    const scrollTypes = [
+        "המלך 28 שורות",
+        "המלך 21 שורות",
+        "11 שורות",
+        "42 שורות",
+        "11 שורות הרב עובדיה",
+        "אחר"
+    ];
     const compressionOptions = {
         maxSizeMB: 1,
         maxWidthOrHeight: 1920,
@@ -47,7 +57,7 @@ const AddProduct = ({ onClose }) => {
         const { name, value, type, checked } = e.target;
         setFormData(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value,
+            [name]: type === 'checkbox' || type === 'radio' ? checked : value,
         }));
     };
 
@@ -74,278 +84,249 @@ const AddProduct = ({ onClose }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsUploading(true);
-
-        const data = new FormData();
-        data.append('scriptType', formData.scriptType);
-        data.append('scrollType', formData.scrollType);
-        data.append('price', formData.price);
-        data.append('note', formData.note);
-        data.append('isPremiumAd', formData.isPremiumAd);
-
-        if (formData.primaryImage) {
-            data.append('primaryImage', formData.primaryImage);
+        if (!formData.primaryImage || !formData.scriptType || !formData.scrollType || !formData.price) {
+            setShowAlert(true);
+            return;
         }
-
-        formData.additionalImages.forEach(image => {
-            data.append('additionalImages', image);
-        });
-
-        try {
-            const response = await fetch('http://localhost:5000/productsApi/addProduct', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                },
-                body: data,
-            });
-
-            if (response.ok) {
-                alert('המוצר נוסף בהצלחה!');
-                setFormData({
-                    scriptType: '',
-                    scrollType: '',
-                    price: '',
-                    primaryImage: null,
-                    additionalImages: [],
-                    note: '',
-                    isPremiumAd: true,
-                });
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        } finally {
-            setIsUploading(false);
-        }
+        onNext();
+        console.log("Form data before sending:", formData);
+        onFormSubmit(formData);
     };
 
     return (
-        <Dialog open={true} onClose={onClose} fullWidth maxWidth="sm">
-            <Box sx={{ position: 'relative', padding: 4, direction: 'rtl', fontFamily: 'Roboto, sans-serif' }}>
-                <IconButton
-                    onClick={onClose}
+        <Box sx={{ padding: 3, direction: 'rtl', fontFamily: 'Roboto, sans-serif', width: '100%', maxWidth: 600 }}>
+            {showAlert && (
+                <Alert
+                    severity="error"
                     sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        zIndex: 1,
-                        color: 'black',
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-                <Typography
-                    variant="h4"
-                    gutterBottom
-                    sx={{
-                        fontFamily: "'Poppins', sans-serif",
-                        textAlign: 'center',
                         marginBottom: 2,
-                        fontWeight: 'bold', // הופך את הטקסט לעבה יותר
-                        color: '#2d3436', // צבע בסיסי לטקסט
-                        textShadow: `
-                        1px 1px 2px rgba(0, 0, 0, 0.2), 
-                        2px 2px 4px rgba(0, 0, 0, 0.15)
-                        `, // אפקט תלת מימדי עם צללים
+                        '& .MuiAlert-icon': {
+                            marginLeft: 2
+                        }
                     }}
                 >
-                    הוספת מוצר חדש
-                </Typography>
+                    יש למלא את כל פרטי המוצר
+                </Alert>
+            )}
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                    <FormControl fullWidth>
+                        <InputLabel
+                            shrink
+                            sx={{
+                                color: 'black',
+                                backgroundColor: 'white',
+                                padding: '0 4px',
+                            }}
+                        >
+                            סוג כתב
+                        </InputLabel>
+                        <Select
+                            name="scriptType"
+                            value={formData.scriptType}
+                            onChange={handleChange}
+                            required
+                            sx={{
+                                fontFamily: 'Roboto, sans-serif',
+                                fontSize: '1rem',
+                                height: '45px',
+                            }}
+                        >
+                             {scriptTypes.map((type) => (
+                                <MenuItem key={type} value={type}>
+                                    {type}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
 
-                <form onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                        <FormControl fullWidth>
-                                <InputLabel
-                                    shrink
-                                    sx={{
-                                        color: 'black',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        backgroundColor: 'white',
-                                        padding: '0 4px',
-                                        marginLeft: '-4px',
-                                    }}
-                                >
-                                    סוג כתב
-                                </InputLabel>
-                                <Select
-                                    name="scriptType"
-                                    value={formData.scriptType}
-                                    onChange={handleChange}
-                                    required
-                                    sx={{
-                                        fontFamily: 'Roboto, sans-serif',
-                                    }}
-                                >
-                                    <MenuItem value="בית יוסף">בית יוסף</MenuItem>
-                                    <MenuItem value="ספרדי">ספרדי</MenuItem>
-                                </Select>
-                            </FormControl>
+                <Grid item xs={12}>
+                    <FormControl fullWidth>
+                        <InputLabel
+                            shrink
+                            sx={{
+                                color: 'black',
+                                backgroundColor: 'white',
+                                padding: '0 4px',
+                            }}
+                        >
+                            סוג המגילה
+                        </InputLabel>
+                        <Select
+                            name="scrollType"
+                            value={formData.scrollType}
+                            onChange={handleChange}
+                            required
+                            sx={{
+                                fontFamily: 'Roboto, sans-serif',
+                                fontSize: '1rem',
+                                height: '45px',
+                            }}
+                        >
+                            {scrollTypes.map((type) => (
+                                <MenuItem key={type} value={type}>
+                                    {type}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Grid>
 
-                        </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="מחיר"
+                        type="number"
+                        name="price"
+                        value={formData.price}
+                        onChange={handleChange}
+                        fullWidth
+                        required
+                        InputLabelProps={{
+                            style: { color: 'black' },
+                            shrink: true,
+                        }}
+                        sx={{
+                            fontSize: '1rem',
+                            height: '45px',
+                        }}
+                        inputProps={{
+                            min: 100,
+                        }}
+                    />
+                </Grid>
 
-                        <Grid item xs={12}>
-                        <FormControl fullWidth>
-                                <InputLabel
-                                    shrink
-                                    sx={{
-                                        color: 'black',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        backgroundColor: 'white',
-                                        padding: '0 4px',
-                                        marginLeft: '-4px',
-                                    }}
-                                >
-                                    סוג ספר תורה 
-                                </InputLabel>
-                                <Select
-                                    name="scriptType"
-                                    value={formData.scriptType}
-                                    onChange={handleChange}
-                                    required
-                                    sx={{
-                                        fontFamily: 'Roboto, sans-serif',
-                                    }}
-                                >
-                                    <MenuItem value="בית יוסף">שורות 11</MenuItem>
-                                    <MenuItem value="ספרדי">ספרדי</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        label="הערות"
+                        name="note"
+                        value={formData.note}
+                        onChange={handleChange}
+                        fullWidth
+                        multiline
+                        rows={1.2}
+                        InputLabelProps={{
+                            style: { color: 'black' },
+                            shrink: true,
+                        }}
+                        sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontSize: '1rem',
+                            height: '100px',
+                        }}
+                    />
+                </Grid>
 
-                        <Grid item xs={12}>
-                            <TextField
-                                label="מחיר"
-                                type="number"
-                                name="price"
-                                value={formData.price}
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', marginTop: '-45px' }}>
+                    <label htmlFor="primary-image-upload">
+                        <input
+                            id="primary-image-upload"
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePrimaryImageChange}
+                            required
+                            style={{ display: 'none' }}
+                        />
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                borderColor: '#1976d2',
+                                color: '#1976d2',
+                                border: 1,
+                                margin: '0 8px',
+                                fontFamily: 'Roboto, sans-serif',
+                                fontSize: '0.9rem',
+                                padding: '6px 12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                            startIcon={<CloudUploadIcon />}
+                            component="span"
+                        >
+                            הוסף תמונה ראשית
+                        </Button>
+                    </label>
+
+                    <label htmlFor="additional-images-upload">
+                        <input
+                            id="additional-images-upload"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleAdditionalImagesChange}
+                            style={{ display: 'none' }}
+                        />
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                borderColor: '#1976d2',
+                                color: '#1976d2',
+                                border: 1,
+                                margin: '0 8px',
+                                fontFamily: 'Roboto, sans-serif',
+                                fontSize: '0.9rem',
+                                padding: '6px 12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                            }}
+                            startIcon={<CloudUploadIcon />}
+                            component="span"
+                        >
+                            העלה תמונות נוספות
+                        </Button>
+                    </label>
+                </Grid>
+
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', fontSize: '0.9rem' }}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                name="isPremiumAd"
+                                checked={formData.isPremiumAd}
                                 onChange={handleChange}
-                                fullWidth
-                                required
-                                InputLabelProps={{
-                                    style: { color: 'black' },
-                                    shrink: true,
-                                }}
-                                sx={{ fontFamily: 'Roboto, sans-serif' }}
-                                inputProps={{
-                                    min: 100,
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <label htmlFor="primary-image-upload">
-                                <input
-                                    id="primary-image-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handlePrimaryImageChange}
-                                    required
-                                    style={{ display: 'none' }}
-                                />
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: 'white',
-                                        borderColor: '#00bcd4',
-                                        color: '#00bcd4',
-                                        border: 2,
-                                        margin: '0 8px',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                    }}
-                                    startIcon={<CloudUploadIcon />}
-                                    component="span"
-                                >
-                                    הוסף תמונה ראשית
-                                </Button>
-                            </label>
-
-                            <label htmlFor="additional-images-upload">
-                                <input
-                                    id="additional-images-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    onChange={handleAdditionalImagesChange}
-                                    style={{ display: 'none' }}
-                                />
-                                <Button
-                                    variant="contained"
-                                    sx={{
-                                        backgroundColor: 'white',
-                                        borderColor: '#00bcd4',
-                                        color: '#00bcd4',
-                                        border: 2,
-                                        margin: '0 8px',
-                                        fontFamily: 'Roboto, sans-serif',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '8px',
-                                    }}
-                                    startIcon={<CloudUploadIcon />}
-                                    component="span"
-                                >
-                                    העלה תמונות נוספות
-                                </Button>
-                            </label>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <TextField
-                                label="הערות"
-                                name="note"
-                                value={formData.note}
-                                onChange={handleChange}
-                                fullWidth
-                                multiline
-                                rows={4}
-                                InputLabelProps={{
-                                    style: { color: 'black' },
-                                    shrink: true,
-                                }}
+                                size="small"
                                 sx={{ fontFamily: 'Roboto, sans-serif' }}
                             />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        name="isPremiumAd"
-                                        checked={formData.isPremiumAd}
-                                        onChange={handleChange}
-                                        sx={{ color: 'black' }}
-                                    />
-                                }
-                                label="מודעה פרימיום"
-                                sx={{ fontFamily: 'Roboto, sans-serif' }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{
-                                    backgroundColor: '#00bcd4',
-                                    color: 'white',
-                                    fontFamily: 'Roboto, sans-serif',
-                                    boxShadow: 3,
-                                    width: '100%',
-                                    height: '50px',
-                                }}
-                                disabled={isUploading}
-                            >
-                                {isUploading ? <CircularProgress size={24} /> : 'הוסף מוצר'}
-                            </Button>
-                        </Grid>
-                    </Grid>
-                </form>
+                        }
+                        label="מודעת פרימיום"
+                        sx={{
+                            fontFamily: 'Roboto, sans-serif',
+                            fontSize: '0.9rem',
+                            margin: '0',
+                            marginTop: '-15px',
+                        }}
+                    />
+                </Grid>
+            </Grid>
+            <Box
+                sx={[
+                    {
+                        position: 'absolute',
+                        bottom: '10%',
+                        display: 'flex',
+                        flexDirection: { xs: 'column-reverse', sm: 'row' },
+                        alignItems: 'end',
+                        gap: 1,
+                        pb: { xs: 12, sm: 0 },
+                        mt: { xs: 0, sm: 0 },
+                        width: '100%',
+                        maxWidth: 600,
+                        justifyContent: 'flex-end',
+                    },
+                ]}
+            >
+                <Button
+                    variant="contained"
+                    onClick={handleSubmit}
+                    sx={{ width: { xs: '100%', sm: 'fit-content' } }}
+                >
+                    הבא
+                </Button>
             </Box>
-        </Dialog>
+        </Box>
+
     );
 };
 

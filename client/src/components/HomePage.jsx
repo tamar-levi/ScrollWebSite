@@ -1,6 +1,4 @@
 import React from "react";
-import backgroundImage from '../images/1.jpg'; 
-import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 
 const HomePage = ({ onLoginClick }) => {
@@ -8,7 +6,6 @@ const HomePage = ({ onLoginClick }) => {
     <div
       className="relative"
       style={{
-        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -49,7 +46,7 @@ const HomePage = ({ onLoginClick }) => {
             marginBottom: "30px", 
           }}
         >
-          תאווווווווווווווווווררררר
+           תאור כללי
         </p>
         <Button
           variant="outlined"

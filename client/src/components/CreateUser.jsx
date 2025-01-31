@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Box, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
 
 const CreateUser = ({ open, onClose }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     fullName: '',
     displayName: '',
@@ -26,6 +29,7 @@ const CreateUser = ({ open, onClose }) => {
       const response = await axios.post('http://localhost:5000/usersApi/addUser', formData);
       const token = response.data.token;
       document.cookie = `authToken=${token}; path=/; secure; HttpOnly`;
+      dispatch(setUser(response.data.user));
       alert('משתמש נוצר בהצלחה!');
       onClose();
       navigate('/products');
@@ -36,8 +40,8 @@ const CreateUser = ({ open, onClose }) => {
   };
 
   return (
-    <Dialog 
-      open={open} 
+    <Dialog
+      open={open}
       onClose={onClose}
       maxWidth="md"
       fullWidth
