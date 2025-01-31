@@ -50,7 +50,7 @@ const EditProductModal = ({ open, onClose, product }) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>עריכת מוצר</DialogTitle>
+      <DialogTitle>עריכת מוצר </DialogTitle>
       <DialogContent>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
           <TextField

@@ -10,6 +10,7 @@ import HomePage from './components/HomePage';
 import About from './components/About'; 
 import Checkout from './components/Checkout';
 import UserProducts from './components/UserProducts';
+import AccountPage from './components/AccountPage'; // הוספנו את עמוד "חשבון שלי"
 
 function App() {
   const [openLogin, setOpenLogin] = useState(false);
@@ -36,13 +37,14 @@ function App() {
           minHeight: 'calc(100vh - 64px)' 
         }}>
           <Routes>
-            <Route path="/" element={<HomePage onLoginClick={handleOpenLogin} />} /> {/* העברת הפונקציה */}
+            <Route path="/" element={<HomePage onLoginClick={handleOpenLogin} />} />
             <Route path="/products" element={<ProductList />} />
             <Route path="/add-product" element={<Checkout />} />
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/payment" element={<PaymentForm />} />
             <Route path="/about" element={<About />} /> 
             <Route path="/myProducts" element={<UserProducts />} /> 
+            <Route path="/myAccount" element={<AccountPage />} /> {/* נתיב לעמוד חשבון שלי */}
           </Routes>
         </Box>
 

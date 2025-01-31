@@ -12,7 +12,6 @@ const FilterComponent = ({ onFilter }) => {
 
     const handleFontTypeChange = (event) => {
         setFontType(event.target.value);
-
     };
 
     const handleScrollTypeChange = (event) => {
@@ -25,6 +24,13 @@ const FilterComponent = ({ onFilter }) => {
             fontType: fontType || null,
             scrollType: scrollType || null,
         });
+    };
+
+    const resetFilters = () => {
+        setPriceRange([100, 10000]);
+        setFontType('');
+        setScrollType('');
+        onFilter({ priceRange: [100, 10000], fontType: null, scrollType: null });
     };
 
     return (
@@ -60,7 +66,6 @@ const FilterComponent = ({ onFilter }) => {
                     <FormControlLabel value={'ספרדי'} control={<Radio />} label="ספרדי" />
                     <FormControlLabel value={'חב"ד'} control={<Radio />} label={'חב"ד'} />
                     <FormControlLabel value={'תימני'} control={<Radio />} label="תימני" />
-                    {/* <FormControlLabel value={'אחר'} control={<Radio />} label="אחר" /> */}
                 </RadioGroup>
             </div>
             <div style={{ alignSelf: 'flex-start' }}>
@@ -73,7 +78,6 @@ const FilterComponent = ({ onFilter }) => {
                     <FormControlLabel value={'11 שורות'} control={<Radio />} label="11 שורות" />
                     <FormControlLabel value={'42 שורות'} control={<Radio />} label="42 שורות" />
                     <FormControlLabel value={'11 שורות הרב עובדיה'} control={<Radio />} label="11 שורות הרב עובדיה" />
-                    {/* <FormControlLabel value={'אחר'} control={<Radio />} label="אחר" /> */}
                 </RadioGroup>
             </div>
             <div style={{ marginBottom: '20px', alignSelf: 'stretch' }}>
@@ -92,6 +96,9 @@ const FilterComponent = ({ onFilter }) => {
 
             <Button variant="contained" color="primary" fullWidth onClick={applyFilters}>
                 סנן
+            </Button>
+            <Button variant="outlined" color="primary" fullWidth onClick={resetFilters} style={{ marginTop: '10px', borderColor: '#64b5f6', color: '#64b5f6' }}>
+                איפוס סינונים
             </Button>
         </div>
     );

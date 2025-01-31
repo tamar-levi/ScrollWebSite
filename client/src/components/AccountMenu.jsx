@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -9,14 +9,17 @@ import Typography from '@mui/material/Typography';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../redux/userSlice';
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const user = useSelector((state) => state.user.currentUser);
   const open = Boolean(anchorEl);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -27,6 +30,12 @@ export default function AccountMenu() {
   };
 
   const firstLetter = user?.fullName ? user.fullName.charAt(0) : 'א';
+
+  const handleLogout = () => {
+    alert('התנתקותך בוצעה בהצלחה');
+    dispatch(logout());
+    navigate('/');
+  };
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -63,11 +72,12 @@ export default function AccountMenu() {
           </Typography>
         </Box>
 
-        <MenuItem onClick={handleClose} dir="rtl">
+        {/* קישור לעמוד "חשבון שלי" */}
+        <MenuItem component={Link} to="/myAccount" onClick={handleClose} dir="rtl">
           <ListItemIcon sx={{ marginLeft: 1 }}>
             <AccountCircleIcon />
           </ListItemIcon>
-          החשבון שלי
+          חשבון שלי
         </MenuItem>
 
         <MenuItem component={Link} to="/myProducts" onClick={handleClose} dir="rtl">
@@ -77,7 +87,7 @@ export default function AccountMenu() {
           המוצרים שלי
         </MenuItem>
 
-        <MenuItem onClick={handleClose} dir="rtl">
+        <MenuItem onClick={handleLogout} dir="rtl">
           <ListItemIcon sx={{ marginLeft: 1 }}>
             <LogoutIcon />
           </ListItemIcon>
