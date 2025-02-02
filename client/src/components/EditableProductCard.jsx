@@ -56,12 +56,18 @@ const handleConfirmDelete = async () => {
   return (
     <>
       <Card className="product-card" style={{ width: '300px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
-        <img
-          className="product-image"
-          src={`data:image/jpeg;base64,${product.primaryImage}`}
-          alt={product.scriptType}
-        />
-        <CardContent className="product-card-content" style={{ padding: '20px' }}>
+      <img
+    className="product-image"
+    src={`data:image/jpeg;base64,${product.primaryImage}`}
+    alt={product.scriptType}
+    style={{
+      width: '100%',
+      height: '200px', 
+      objectFit: 'cover', 
+      objectPosition: 'center' 
+    }}
+  />
+        <CardContent className="product-card-content" style={{ padding: '20px', direction: 'rtl' }}>
           <Typography style={typographyStyle}>
             <ArticleOutlinedIcon sx={iconStyle} />
             <strong>סוג המגילה:</strong> {product.scrollType}

@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import FilterComponent from './FilterComponent';
-import { Alert } from '@mui/material';
+import { Alert, Box, Grid } from '@mui/material';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 
 const ProductList = () => {
@@ -21,7 +21,7 @@ const ProductList = () => {
         const response = await fetch('http://localhost:5000/productsApi/getAllProducts');
         const data = await response.json();
         setProducts(data);
-        setFilteredProducts(data); 
+        setFilteredProducts(data);
       } catch (error) {
         console.error('Failed to fetch products:', error);
       }
@@ -30,7 +30,7 @@ const ProductList = () => {
     fetchProducts();
   }, []);
 
-    const handleOpenModal = (product) => {
+  const handleOpenModal = (product) => {
     setSelectedProduct(product);
   };
 
@@ -41,66 +41,72 @@ const ProductList = () => {
   const handleFilter = ({ priceRange, fontType, scrollType }) => {
     const filtered = products.filter((product) => {
       const isPriceInRange = product.price >= priceRange[0] && product.price <= priceRange[1];
-      const isFontTypeMatch = fontType ? product.scriptType == fontType : true;
-      const isScrollTypeMatch = scrollType ? product.scrollType == scrollType : true;
+      const isFontTypeMatch = fontType ? product.scriptType === fontType : true;
+      const isScrollTypeMatch = scrollType ? product.scrollType === scrollType : true;
       return isPriceInRange && isFontTypeMatch && isScrollTypeMatch;
     });
 
     setFilteredProducts(filtered);
-    setNoProducts(filtered.length === 0); 
+    setNoProducts(filtered.length === 0);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [filteredProducts]);
 
   return (
     <>
-      <Stack spacing={2} direction="row" marginTop={8}>
+      <Stack spacing={2} direction="row" marginTop={8} marginRight={'20%'}>
         <Button variant="outlined" onClick={() => navigate('/add-product')} startIcon={<AddBoxIcon />}>
           להוספת מוצר
         </Button>
       </Stack>
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px' }}>
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '10px',
-            maxWidth: '80%',
-            justifyContent: 'center',
-          }}
-        >
-          {noProducts ? (
-                      <Alert
-                      severity="warning"
-                      sx={{
-                        marginBottom: 2,
-                        width: '100%',
-                        maxWidth: '600px',
-                        direction: 'rtl',
-                        '& .MuiAlert-icon': {
-                          marginRight: 2,
-                          marginLeft: 2
-                        },
-                        width: '100%',
-                      }}
-                    >
-                      לא נמצאו מוצרים מתאימים
-                    </Alert>
-          ) : (
-            filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                style={{
-                  width: 'calc(33.33% - 22px)',
-                  marginBottom: '32px',
-                }}
-              >
+      <Box sx={{ padding: '20px', marginRight: '20%' }}>
+        {noProducts ? (
+          <Alert
+            severity="warning"
+            sx={{
+              marginBottom: 2,
+              width: '100%',
+              maxWidth: '600px',
+              direction: 'rtl',
+              '& .MuiAlert-icon': {
+                marginRight: 2,
+                marginLeft: 2
+              },
+            }}
+          >
+            לא נמצאו מוצרים מתאימים
+          </Alert>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gap: 2,
+              maxWidth: '100%',
+              width: '100%',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              justifyContent: 'start',
+              '@media (max-width: 1200px)': {
+                gridTemplateColumns: 'repeat(2, 1fr)', 
+              },
+              '@media (max-width: 600px)': {
+                gridTemplateColumns: '1fr', 
+              },
+            }}
+          >
+            {filteredProducts.map((product) => (
+              <Box key={product._id} sx={{ marginBottom: 2 }}>
                 <ProductCard product={product} onOpenModal={handleOpenModal} />
-              </div>
-            ))
-          )}
-          {selectedProduct && <ProductModal product={selectedProduct} onClose={handleCloseModal} />}
-        </div>
-        <FilterComponent onFilter={handleFilter} />
-      </div>
+              </Box>
+            ))}
+          </Box>
+        )}
+        {selectedProduct && <ProductModal product={selectedProduct} onClose={handleCloseModal} />}
+      </Box>
+      <FilterComponent onFilter={handleFilter} />
     </>
   );
 };

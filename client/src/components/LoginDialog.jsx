@@ -79,9 +79,6 @@ const LoginDialog = ({ open, onClose }) => {
         e.preventDefault();
         console.log('Opening create user dialog');
         setShowCreateUser(true);
-        setTimeout(() => {
-            handleClose();
-        }, 0);
     };
 
     const handleCreateUserClose = () => {
@@ -172,7 +169,7 @@ const LoginDialog = ({ open, onClose }) => {
 
                     </Box>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions sx={{ justifyContent: 'flex-start', mt: -2  }}>
                     <Button onClick={handleClose}>סגור</Button>
                 </DialogActions>
             </Dialog>

@@ -72,13 +72,13 @@ export default function AccountMenu() {
           </Typography>
         </Box>
 
-        {/* קישור לעמוד "חשבון שלי" */}
-        <MenuItem component={Link} to="/myAccount" onClick={handleClose} dir="rtl">
-          <ListItemIcon sx={{ marginLeft: 1 }}>
-            <AccountCircleIcon />
+        <MenuItem component     ={Link} to="/account" onClick={handleClose} dir="rtl">
+           <ListItemIcon sx  ={{ marginLeft: 1 }}>
+              <AccountCircleIcon />
           </ListItemIcon>
-          חשבון שלי
+           החשבון שלי
         </MenuItem>
+
 
         <MenuItem component={Link} to="/myProducts" onClick={handleClose} dir="rtl">
           <ListItemIcon sx={{ marginLeft: 1 }}>
