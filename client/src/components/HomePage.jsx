@@ -47,7 +47,7 @@ const HomePage = () => {
             marginBottom: "20px",
           }}
         >
-          Scrolls
+          לוח המגילות
         </h1>
         <p
           style={{

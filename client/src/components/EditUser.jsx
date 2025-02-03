@@ -18,53 +18,79 @@ export default function EditUser() {
 
   const handleSave = async () => {
     setLoading(true);
-    const userData = { fullName, email, city };
+    console.log('Attempting to save user data');
+    const userData = {};
+
+    if (fullName !== user.fullName) userData.fullName = fullName;
+    if (email.toLowerCase() !== user.email.toLowerCase()) userData.email = email;
+    if (city !== user.city) userData.city = city;
+  
+    if (Object.keys(userData).length === 0) {
+      alert('לא בוצע שינוי בשדות');
+      console.log('No changes detected');
+      setLoading(false);
+      return;
+    }
     try {
+      console.log('Sending data:', userData);
       const response = await axios.put('http://localhost:5000/usersApi/updateUserDetails', userData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-
+  
+      console.log('Response received:', response.data);
       if (response.data) {
         dispatch(updateUser(response.data));
+        localStorage.setItem('user', JSON.stringify(response.data));
         alert('הפרטים עודכנו בהצלחה');
         navigate('/account');
       }
     } catch (err) {
-      setError('לא הצלחנו לעדכן את הפרטים, נסה שנית');
+      console.error('Error updating user:', err);
+      if (err.response && err.response.data === 'Email already exists') {
+        setError('המייל כבר קיים, אנא השתמש במייל אחר');
+      } else {
+        setError('לא הצלחנו לעדכן את הפרטים, נסה שנית');
+      }
+      setTimeout(() => {
+        setError(null); 
+      }, 3000);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
-      try {
-        const response = await axios.delete('http://localhost:5000/usersApi/deleteUser', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
+      console.log('User canceled deletion');
+      return;
+    }
 
-        if (response.status === 200) {
-          dispatch(deleteUserProducts());
-          dispatch(deleteUser());
-          localStorage.removeItem('token'); // מחיקת הטוקן מהזיכרון
-          alert('מחיקת המשתמש בוצעה בהצלחה');
-          navigate('/');
-        } else {
-          alert('שגיאה במחיקת המשתמש');
+    const token = localStorage.getItem('token');
+    console.log('Token before delete request--------------------------:', token);
+
+    try {
+      await axios.delete('http://localhost:5000/usersApi/deleteUser', {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      } catch (error) {
-        console.error('Error deleting user:', error);
-        alert('שגיאה במחיקת המשתמש, נסה שוב מאוחר יותר');
-      }
+      });
+      console.log('User deleted successfully');
+      dispatch(deleteUserProducts());
+      dispatch(deleteUser());
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      navigate('/');
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      alert('שגיאה במחיקת המשתמש, נסה שנית');
     }
   };
 
   const handleGoBack = () => {
+    console.log('Navigating back to account page');
     navigate('/account');
   };
 
@@ -78,21 +104,21 @@ export default function EditUser() {
         fullWidth
         label="שם מלא"
         value={fullName}
-        onChange={(e) => setFullName(e.target.value)}
+        onChange={(e) => { console.log('Full Name changed:', e.target.value); setFullName(e.target.value); }}
         sx={{ mt: 2 }}
       />
       <TextField
         fullWidth
         label="אימייל"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => { console.log('Email changed:', e.target.value); setEmail(e.target.value); }}
         sx={{ mt: 2 }}
       />
       <TextField
         fullWidth
         label="כתובת"
         value={city}
-        onChange={(e) => setCity(e.target.value)}
+        onChange={(e) => { console.log('City changed:', e.target.value); setCity(e.target.value); }}
         sx={{ mt: 2 }}
       />
 

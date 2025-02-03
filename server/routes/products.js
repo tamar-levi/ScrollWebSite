@@ -7,8 +7,8 @@ const sharp = require('sharp');
 
 const upload = multer({
     limits: {
-        fileSize: 2 * 1024 * 1024, // 2MB limit
-        files: 6 // Maximum 6 files
+        fileSize: 2 * 1024 * 1024,
+        files: 6 
     },
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith('image/')) {

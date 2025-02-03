@@ -10,6 +10,7 @@ import Checkout from './components/Checkout';
 import UserProducts from './components/UserProducts';
 import UserAccount from './components/UserAccount';
 import EditUser from './components/EditUser';
+import PdfProductsList from './components/PdfProductsList';
 import { Box } from '@mui/material';
 
 function App() {
@@ -27,14 +28,14 @@ function App() {
           minHeight: 'calc(100vh - 64px)' 
         }}>
           <Routes>
-            <Route path="/" element={<HomePage />} /> 
+            <Route path="/" element={<PdfProductsList />} /> 
             <Route path="/products" element={<ProductList />} />
             <Route path="/add-product" element={<Checkout />} />
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/payment" element={<PaymentForm />} />
             <Route path="/about" element={<About />} /> 
             <Route path="/myProducts" element={<UserProducts />} /> 
-            <Route path="/account" element={<UserAccount />} /> {/* נתיב לעמוד החשבון */}
+            <Route path="/account" element={<UserAccount />} />
             <Route path="/editUser" element={<EditUser />} />
           </Routes>
         </Box>

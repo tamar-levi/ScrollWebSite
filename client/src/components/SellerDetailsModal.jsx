@@ -48,6 +48,7 @@ const SellerDetailsModal = ({ sellerId, isOpen, onClose }) => {
             if (!response.ok) throw new Error('Failed to fetch seller details');
             const data = await response.json();
             setSeller(data);
+            console.log(data);
         } catch (error) {
             setError('שגיאה בטעינת פרטי המוכר');
             console.error('Error:', error);

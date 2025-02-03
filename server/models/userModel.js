@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
+    lowercase: true,
     validate: {
       validator: function (v) {
         return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v);
@@ -33,23 +35,30 @@ const userSchema = new mongoose.Schema({
     required: true
   },
   isSeller: {
-    type: Boolean, // true = סוחר, false = סופר
+    type: Boolean,
     required: true
   },
-  password: { 
-    type: String, 
-    required: true 
+  password: {
+    type: String,
+    required: true
   }
 });
 
 userSchema.pre('save', async function (next) {
+  if (this.isModified('email')) {
+    const existingUser = await User.findOne({ email: this.email });
+    if (existingUser) {
+      return next(new Error('Email already exists'));
+    }
+  }
+
   if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
+
   next();
 });
 
 const User = mongoose.model('User', userSchema);
-
-module.exports = User; 
+module.exports = User;

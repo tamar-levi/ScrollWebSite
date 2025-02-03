@@ -5,8 +5,8 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import FilterComponent from './FilterComponent';
-import { Alert, Box, Grid } from '@mui/material';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+import { Alert, Box, CircularProgress } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const ProductList = () => {
   const navigate = useNavigate();
@@ -14,6 +14,7 @@ const ProductList = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [noProducts, setNoProducts] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -22,8 +23,10 @@ const ProductList = () => {
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
+        setLoading(false);  
       } catch (error) {
         console.error('Failed to fetch products:', error);
+        setLoading(false);  
       }
     };
 
@@ -56,11 +59,20 @@ const ProductList = () => {
 
   return (
     <>
-      <Stack spacing={2} direction="row" marginTop={8} marginRight={'20%'}>
-        <Button variant="outlined" onClick={() => navigate('/add-product')} startIcon={<AddBoxIcon />}>
-          להוספת מוצר
-        </Button>
-      </Stack>
+      <Box sx={{ marginTop: 8, marginRight: '20%' }}>
+        <Stack spacing={2} direction="row">
+          <Button variant="outlined" onClick={() => navigate('/add-product')} startIcon={<AddIcon />}>
+            פרסם את המגילה שלך
+          </Button>
+        </Stack>
+
+        {loading && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 2 }}>
+            <CircularProgress />
+          </Box>
+        )}
+      </Box>
+
       <Box sx={{ padding: '20px', marginRight: '20%' }}>
         {noProducts ? (
           <Alert
@@ -82,7 +94,7 @@ const ProductList = () => {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gridTemplateColumns: 'repeat(3, 1fr)',
               gap: 2,
               maxWidth: '100%',
               width: '100%',
@@ -90,10 +102,10 @@ const ProductList = () => {
               marginRight: 'auto',
               justifyContent: 'start',
               '@media (max-width: 1200px)': {
-                gridTemplateColumns: 'repeat(2, 1fr)', 
+                gridTemplateColumns: 'repeat(2, 1fr)',
               },
               '@media (max-width: 600px)': {
-                gridTemplateColumns: '1fr', 
+                gridTemplateColumns: '1fr',
               },
             }}
           >
@@ -106,7 +118,7 @@ const ProductList = () => {
         )}
         {selectedProduct && <ProductModal product={selectedProduct} onClose={handleCloseModal} />}
       </Box>
-      <FilterComponent onFilter={handleFilter} />
+      <FilterComponent onFilter={handleFilter} products={products} />
     </>
   );
 };

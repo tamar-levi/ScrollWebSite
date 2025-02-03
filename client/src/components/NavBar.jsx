@@ -90,7 +90,7 @@ export default function NavBar() {
               fontWeight: 500
             }}
           >
-            SCROLLS
+            לוח המגילות
           </Typography>
         </Box>
       </Toolbar>

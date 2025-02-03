@@ -33,10 +33,11 @@ const getCurrentUser = async (req, res) => {
 
 const addUser = async (req, res) => {
     const { fullName, displayName, phoneNumber, email, city, isSeller, password } = req.body;
+    const emailLowerCase = email.toLowerCase();
 
     try {
         const newUser = new User({
-            fullName, displayName, phoneNumber, email, city, isSeller, password
+            fullName, displayName, phoneNumber, email: emailLowerCase, city, isSeller, password
         });
 
         await newUser.save();
@@ -60,8 +61,13 @@ const updateUserDetails = async (req, res) => {
         console.log(req.user);
         const userId = req.user.id;
         const updates = req.body;
-        console.log(updates);
-
+        if (updates.email) {
+            updates.email = updates.email.toLowerCase();
+            const existingUser = await User.findOne({ email: updates.email });
+            if (existingUser && existingUser._id !== userId) {
+                return res.status(400).send('Email already exists');
+            }
+        }
         const updatedUser = await User.findByIdAndUpdate(userId, updates, { new: true });
         if (!updatedUser) {
             return res.status(404).send('User not found');
@@ -73,6 +79,7 @@ const updateUserDetails = async (req, res) => {
         res.status(500).send('Database error');
     }
 };
+
 
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
@@ -106,17 +113,18 @@ const deleteUser = async (req, res) => {
     const userId = req.user.id;
     try {
         const user = await User.findByIdAndDelete(userId);
+        console.log("Deleted user:", user);
         if (!user) {
-            return res.status(404).send('User not found');
+            return res.status(404).json({ message: 'User not found' });
         }
-        res.json({
-            message: 'User deleted successfully'
-        });
+
+        res.json({ message: 'User deleted successfully' });
     } catch (err) {
-        console.error('Error deleting user', err);
-        res.status(500).send('Server error');
+        console.error('Error deleting user:', err);
+        res.status(500).json({ message: 'Server error' });
     }
 };
+
 
 const handleGoogleLogin = async (req, res) => {
     const { googleToken } = req.body;

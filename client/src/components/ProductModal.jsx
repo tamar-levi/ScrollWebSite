@@ -59,7 +59,7 @@ const ProductModal = ({ product, onClose }) => {
             </Typography>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ padding: 2, gap: 2 }}>
+        <DialogActions sx={{ padding: 2 }}>
           <Button variant="outlined" sx={{ ...buttonStyle }} endIcon={<PersonIcon />} onClick={handleSellerDetailsClick}>
             פרטי המוכר
           </Button>
