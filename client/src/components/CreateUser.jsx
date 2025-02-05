@@ -29,13 +29,11 @@ const CreateUser = ({ open, onClose }) => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const handleChange = (e) => {
-    console.log(`Field changed: ${e.target.name}, New Value: ${e.target.value}`);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleCreateUserSubmit = async (e) => {
     if (!formData.fullName || !formData.password || !formData.email || !formData.city || !formData.phoneNumber || !formData.displayName) {
-      console.log('Missing fields detected');
       setSnackbar({ open: true, message: 'נא למלא את כל השדות', severity: 'error' });
       return;
     }
@@ -43,7 +41,6 @@ const CreateUser = ({ open, onClose }) => {
     try {
       console.log('Sending data:', formData);
       const response = await axios.post('http://localhost:5000/usersApi/addUser', formData);
-      console.log('Response received:', response.data);
       const token = response.data.token;
       localStorage.setItem('token', token);
       dispatch(setUser(response.data.user));
@@ -114,7 +111,7 @@ const CreateUser = ({ open, onClose }) => {
                 onChange={handleChange}
                 fullWidth
                 InputProps={{ startAdornment: <ContactPhoneIcon sx={{ mr: 1, fontSize: '20px' }} /> }}
-              />
+                />
             </Box>
 
             <Box sx={{ display: 'flex', gap: 2 }}>

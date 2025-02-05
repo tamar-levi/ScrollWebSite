@@ -24,7 +24,7 @@ export default function EditUser() {
     if (fullName !== user.fullName) userData.fullName = fullName;
     if (email.toLowerCase() !== user.email.toLowerCase()) userData.email = email;
     if (city !== user.city) userData.city = city;
-  
+
     if (Object.keys(userData).length === 0) {
       alert('לא בוצע שינוי בשדות');
       console.log('No changes detected');
@@ -39,7 +39,7 @@ export default function EditUser() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-  
+
       console.log('Response received:', response.data);
       if (response.data) {
         dispatch(updateUser(response.data));
@@ -55,15 +55,16 @@ export default function EditUser() {
         setError('לא הצלחנו לעדכן את הפרטים, נסה שנית');
       }
       setTimeout(() => {
-        setError(null); 
+        setError(null);
       }, 3000);
     } finally {
       setLoading(false);
     }
   };
 
+
   const handleDelete = async () => {
-    if (!window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש? המוצרים שלך ימחקו גם כן.')) {
       console.log('User canceled deletion');
       return;
     }
@@ -136,7 +137,16 @@ export default function EditUser() {
         </Button>
       </Box>
 
-      <Button variant="outlined" color="error" onClick={handleDelete} sx={{ mt: 2 }}>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={(e) => {
+          e.preventDefault();
+          console.log('Button clicked');
+          return false;
+        }}
+        sx={{ mt: 2 }}
+      >
         מחיקת משתמש
       </Button>
     </Box>

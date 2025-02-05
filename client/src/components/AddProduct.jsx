@@ -40,7 +40,7 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
         "המלך 21 שורות",
         "11 שורות",
         "42 שורות",
-        "11 שורות הרב עובדיה",
+        "11 שורות גליון ס''ת",
         "אחר"
     ];
     const compressionOptions = {

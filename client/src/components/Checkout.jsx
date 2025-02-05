@@ -23,6 +23,8 @@ export default function Checkout() {
     const [activeStep, setActiveStep] = useState(0);
     const [productData, setProductData] = useState(null);
     const [paymentData, setPaymentData] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const getStepContent = (step) => {
         switch (step) {
             case 0:
@@ -41,7 +43,7 @@ export default function Checkout() {
             handleFinalSubmit();
         }
         else {
-            setActiveStep((prev) => prev + 1);
+            if (activeStep < 2) { setActiveStep((prev) => prev + 1); }
         }
     };
 
@@ -68,7 +70,10 @@ export default function Checkout() {
     };
 
     const addProduct = async () => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
         console.log("Adding product:", productData);
+
         try {
             const formData = new FormData();
             formData.append('scriptType', productData.scriptType);
@@ -94,6 +99,8 @@ export default function Checkout() {
             }
         } catch (error) {
             console.error('Error:', error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 

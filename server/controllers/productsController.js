@@ -53,6 +53,35 @@ const addProduct = async (req, res) => {
     }
 };
 
+const addProductFromForm = async (req, res) => {
+    const { userId, scriptType, scrollType, price, note, isPremiumAd, primaryImage, additionalImages } = req.body;  // הנתונים על המוצר
+
+    try {
+        // אם לא קיים תמונה ראשית
+        if (!primaryImage) {
+            return res.status(400).json({ message: 'Primary image is required' });
+        }
+
+        // יצירת המוצר החדש
+        const newProduct = new Product({
+            scriptType,
+            scrollType,
+            price,
+            primaryImage,
+            additionalImages: additionalImages || [],
+            note,
+            isPremiumAd,
+            userId,  
+        });
+
+        await newProduct.save();
+        res.status(201).json({ message: 'Product created successfully', product: newProduct });
+    } catch (err) {
+        console.error('Error adding product from form', err);
+        res.status(500).send('Database error');
+    }
+};
+
 
 const getAllProductsByUser = async (req, res) => {
     try {
@@ -122,4 +151,4 @@ const deleteProduct = async (req, res) => {
     }
 };
 
-module.exports = { getAllProducts, addProduct, updateProductsDetails, getAllProductsByUser, deleteProduct};
+module.exports = { getAllProducts, addProduct,addProductFromForm, updateProductsDetails, getAllProductsByUser, deleteProduct};

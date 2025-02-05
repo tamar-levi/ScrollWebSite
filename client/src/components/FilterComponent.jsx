@@ -24,14 +24,20 @@ const FilterComponent = ({ onFilter, products }) => {
     };
 
     const applyFilters = () => {
+        const normalizedFontType = fontType
+            .replace(/["']/g, '')
+            .replace('הארי', 'האר"י')
+            .replace('חבד', 'חב"ד');
+            
         console.log('Applying filters:', {
             priceRange,
-            fontType,
+            fontType: normalizedFontType,
             scrollType,
         });
+        
         onFilter({
             priceRange,
-            fontType: fontType || null,
+            fontType: normalizedFontType || null,
             scrollType: scrollType || null,
         });
     };
@@ -81,7 +87,7 @@ const FilterComponent = ({ onFilter, products }) => {
                         padding: '10px 0'
                     }}
                 >
-                    {['בית יוסף', 'האר"י', 'ספרדי', 'חב"ד', 'תימני'].map((type) => (
+                    {['בית יוסף', 'האר"י', 'ספרדי (וועליש)', 'חב"ד', 'תימני'].map((type) => (
                         <FormControlLabel
                             key={type}
                             value={type}
@@ -106,7 +112,7 @@ const FilterComponent = ({ onFilter, products }) => {
                         padding: '10px 0'
                     }}
                 >
-                    {['המלך 28 שורות', 'המלך 21 שורות', '11 שורות', '42 שורות', '11 שורות הרב עובדיה'].map((type) => (
+                    {['המלך 28 שורות', 'המלך 21 שורות', '11 שורות', '42 שורות', '11 שורות גליון ס"ת'].map((type) => (
                         <FormControlLabel
                             key={type}
                             value={type}

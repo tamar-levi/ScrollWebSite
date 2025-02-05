@@ -6,6 +6,8 @@ const bcrypt = require('bcryptjs');
 const { sendWelcomeEmail } = require('../services/emailService');
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const Product = require('../models/productModel');
+
 
 const getAllUsers = async (req, res) => {
     try {
@@ -55,6 +57,34 @@ const addUser = async (req, res) => {
         res.status(500).send('Database error');
     }
 };
+
+const addUserFromForm = async (req, res) => {
+    const { sellerName, phoneNumber, email } = req.body;  // שלושת השדות של המשתמש
+
+    const emailLowerCase = email.toLowerCase();  // כדי לשמור את המייל באותיות קטנות
+
+    try {
+        const newUser = new User({
+            fullName: sellerName,  // השם המלא של המוכר
+            displayName: sellerName,  // displayName - השם שמציגים
+            phoneNumber,
+            email: emailLowerCase,
+            city: 'לא צוין',  // אם לא מצוין, נמלא כ"לא צוין"
+            isSeller: true,  // נניח שברירת המחדל היא כן
+            password: require('crypto').randomBytes(16).toString('hex')  // ניצור סיסמה אוטומטית
+        });
+
+        await newUser.save();
+
+        // מחזירים את ה-ID של המשתמש שנוצר
+        res.status(201).json({ message: 'User created successfully', userId: newUser._id });
+    } catch (err) {
+        console.error('Error creating user from form', err);
+        res.status(500).send('Database error');
+    }
+};
+
+
 
 const updateUserDetails = async (req, res) => {
     try {
@@ -112,16 +142,17 @@ const loginUser = async (req, res) => {
 const deleteUser = async (req, res) => {
     const userId = req.user.id;
     try {
+        await Product.deleteMany({ userId: userId });
         const user = await User.findByIdAndDelete(userId);
-        console.log("Deleted user:", user);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).send('User not found');
         }
-
-        res.json({ message: 'User deleted successfully' });
+        res.json({
+            message: 'User and associated products deleted successfully'
+        });
     } catch (err) {
-        console.error('Error deleting user:', err);
-        res.status(500).json({ message: 'Server error' });
+        console.error('Error deleting user', err);
+        res.status(500).send('Server error');
     }
 };
 
@@ -165,6 +196,7 @@ const handleGoogleLogin = async (req, res) => {
     }
 };
 
+
 const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -181,4 +213,4 @@ const getUserById = async (req, res) => {
     }
 }
 
-module.exports = { getAllUsers, getCurrentUser, addUser, updateUserDetails, loginUser, deleteUser, handleGoogleLogin, getUserById };
+module.exports = { getAllUsers, getCurrentUser, addUser,addUserFromForm, updateUserDetails, loginUser, deleteUser, handleGoogleLogin, getUserById };

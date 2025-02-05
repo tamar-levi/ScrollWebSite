@@ -2,17 +2,43 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Box, Button, Typography, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { deleteUser } from '../redux/userSlice';
+import { deleteUser, deleteUserProducts } from '../redux/userSlice';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function UserAccount() {
   const user = useSelector((state) => state.user.currentUser);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleDelete = () => {
-    if (window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
+  const handleDelete = async () => {
+    if (!window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש? כל המוצרים שלך ימחקו גם כן.')) {
+      console.log('User canceled deletion');
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    console.log('Token before delete request--------------------------:', token);
+
+    try {
+      await axios.delete('http://localhost:5000/usersApi/deleteUser', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      console.log('User deleted successfully');
+      dispatch(deleteUserProducts());
       dispatch(deleteUser());
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      navigate('/');
+    } catch (err) {
+      console.error('Error deleting user:', err);
+      alert('שגיאה במחיקת המשתמש, נסה שנית');
     }
   };
+
 
   return (
     <Box 
