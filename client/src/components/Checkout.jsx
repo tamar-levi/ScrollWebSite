@@ -115,8 +115,8 @@ export default function Checkout() {
                         sm: 8,
                     },
                     direction: 'rtl',
-                    height: '100vh',
-                    overflow: 'hidden',
+                    // height: '100vh',
+                    // overflow: 'hidden',
                 }}
             >
                 <Grid
@@ -176,6 +176,34 @@ export default function Checkout() {
                         overflow: 'hidden',
                     }}
                 >
+<Card 
+    sx={{
+        display: { xs: 'flex', md: 'none' },
+        width: '100%',
+        mb: 2,
+        mt: 3,
+        padding: 0
+    }}
+>
+    <CardContent
+        sx={{
+            display: 'flex',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            textAlign: 'center',
+            padding: '4px !important',
+            '&:last-child': {
+                paddingBottom: '4px !important'
+            },
+            '& > *': {
+                textAlign: 'center'
+            }
+        }}
+    >
+        <InfoMobile />
+    </CardContent>
+</Card>
                     <Box
                         sx={{
                             display: 'flex',
@@ -219,18 +247,7 @@ export default function Checkout() {
                             </Stepper>
                         </Box>
                     </Box>
-                    <Card sx={{ display: { xs: 'flex', md: 'none' }, width: '100%' }}>
-                        <CardContent
-                            sx={{
-                                display: 'flex',
-                                width: '100%',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}
-                        >
-                            <InfoMobile />
-                        </CardContent>
-                    </Card>
+
                     <Box
                         sx={{
                             display: 'flex',
@@ -247,7 +264,12 @@ export default function Checkout() {
                             id="mobile-stepper"
                             activeStep={activeStep}
                             alternativeLabel
-                            sx={{ display: { sm: 'flex', md: 'none' } }}
+                            sx={{
+                                display: { sm: 'flex', md: 'none' },
+                                '& .MuiStepConnector-root': {
+                                    display: 'none'
+                                }
+                            }}
                         >
                             {steps.map((label) => (
                                 <Step

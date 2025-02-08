@@ -26,9 +26,9 @@ const ImageSlider = ({ images }) => {
             src={`data:image/jpeg;base64,${image}`}
             alt={`Image ${index + 1}`}
             style={{
-              width: 'auto',
+              width: '100%',
               height: '300px',
-              maxWidth: '100%',
+              objectFit: 'contain',
               borderRadius: '4px',
               marginBottom: '10px',
               display: 'block',

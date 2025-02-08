@@ -7,30 +7,32 @@ import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 
 const ProductCard = ({ product, onOpenModal }) => {
   const typographyStyle = {
-    fontSize: '0.9rem',
+    fontSize: { xs: '0.8rem', sm: '0.9rem' },
     marginBottom: '12px',
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    textAlign: 'right' 
+    textAlign: 'right',
+    transition: 'all 0.3s ease'
   };
 
   const iconStyle = {
-    fontSize: '1rem',
-    strokeWidth: 1
+    fontSize: { xs: '0.9rem', sm: '1rem' },
+    strokeWidth: 1,
+    color: '#1976d2'
   };
 
   return (
     <Card
       sx={{
         width: { xs: '100%', sm: '300px' },
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+        borderRadius: '16px',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        mx: 'auto', 
-        direction: 'rtl' 
+        mx: 'auto',
+        direction: 'rtl',
       }}
     >
       <Box
@@ -39,11 +41,19 @@ const ProductCard = ({ product, onOpenModal }) => {
         alt={product.scriptType}
         sx={{
           width: '100%',
-          height: { xs: '150px', sm: '200px' },
-          objectFit: 'cover'
+          height: { xs: '180px', sm: '220px' },
+          objectFit: 'cover',
         }}
       />
-      <CardContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <CardContent
+        sx={{
+          p: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.5,
+          backgroundColor: '#ffffff'
+        }}
+      >
         <Typography sx={typographyStyle}>
           <ArticleOutlinedIcon sx={iconStyle} />
           <strong>סוג המגילה:</strong> {product.scrollType}
@@ -65,7 +75,7 @@ const ProductCard = ({ product, onOpenModal }) => {
           variant="outlined"
           color="primary"
           fullWidth
-          sx={{ mt: 1 }} 
+          sx={{ mt: 1 }}
         >
           פרטים נוספים
         </Button>

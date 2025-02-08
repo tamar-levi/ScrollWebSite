@@ -15,12 +15,15 @@ const PdfProductList = () => {
         const data = await response.json();
         setProducts(data);
 
-        const uniqueSellerIds = [...new Set(data.map(product => product.userId))];
+        const sellerIds = data.map(product => product.userId);
+        const uniqueSellerIds = [...new Set(sellerIds)];
+
         uniqueSellerIds.forEach(async (sellerId) => {
           const sellerResponse = await fetch(`http://localhost:5000/usersApi/getUserById/${sellerId}`);
           const sellerData = await sellerResponse.json();
-          setSellers(prev => ({ ...prev, [sellerId]: sellerData }));
+          setSellers((prevSellers) => ({ ...prevSellers, [sellerId]: sellerData }));
         });
+
       } catch (error) {
         console.error('Failed to fetch products:', error);
       }
@@ -28,74 +31,102 @@ const PdfProductList = () => {
     fetchProducts();
   }, []);
 
-  const exportToPDF = () => {
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const isHebrew = (text) => {
+    const hebrewRegex = /[\u0590-\u05FF]/;
+    return hebrewRegex.test(text);
+  };
+
+  const exportToPDF = async () => {
+    const doc = new jsPDF();
     doc.addFileToVFS('DavidLibre-Regular.ttf', font);
     doc.addFont('DavidLibre-Regular.ttf', 'DavidLibre', 'normal');
     doc.setFont('DavidLibre');
     doc.setR2L(true);
-    
-    doc.setFontSize(22);
+    doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.text("📜 רשימת מוצרים", 105, 15, { align: 'center' });
-
-    let yOffset = 30;
+    let yOffset = 20;
+    if (products.length === 0) {
+      doc.text("אין מוצרים להציג", 10, yOffset);
+      doc.save('products-list.pdf');
+      return;
+    }
     products.forEach((product, index) => {
-      if (yOffset > 260) {
+      const seller = sellers[product.userId];
+      if (yOffset > 270) {
         doc.addPage();
-        yOffset = 30;
+        yOffset = 20;
       }
-
-      doc.setDrawColor(150, 150, 150);
-      doc.setLineWidth(0.5);
-      doc.rect(10, yOffset - 5, 190, 80, 'S');
-
-      doc.setFontSize(16);
-      doc.setFont('DavidLibre', 'bold');
-      doc.text(`✨ מוצר ${index + 1}`, 15, yOffset);
-      yOffset += 10;
-      doc.setFont('DavidLibre', 'normal');
-
       if (product.primaryImage) {
         const img = `data:image/jpeg;base64,${product.primaryImage}`;
-        const imgWidth = 50;
-        const imgHeight = 30;
-        doc.addImage(img, 'JPEG', 140, yOffset - 10, imgWidth, imgHeight);
+        const imgProps = doc.getImageProperties(img);
+        const imgWidth = 70;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+        doc.addImage(img, 'JPEG', 120, yOffset, imgWidth, imgHeight);
       }
 
-      doc.setFontSize(12);
-      doc.text(`📜 סוג מגילה: ${product.scrollType || '❌ לא צויין'}`, 15, yOffset);
-      yOffset += 6;
-      doc.text(`✍️ סוג כתב: ${product.scriptType || '❌ לא צויין'}`, 15, yOffset);
-      yOffset += 6;
-      doc.text(`💬 הערות: ${product.note || '✅ אין הערות'}`, 15, yOffset);
-      yOffset += 6;
-      
-      doc.setFontSize(14);
-      doc.text(`💰 מחיר: ${product.price ? `${product.price} ₪` : '❌ לא צויין'}`, 15, yOffset);
-      yOffset += 10;
+      const textOffsetX = 50;
+      const lineHeight = 10;
+      const textWidth = 100;
 
-      const seller = sellers[product.userId];
+      const drawText = (text, yPosition) => {
+        if (isHebrew(text)) {
+          doc.setR2L(true);
+        } else {
+          doc.setR2L(false);
+        }
+        doc.text(text, textOffsetX, yPosition);
+      };
+
+      drawText(`מוצר ${index + 1}:`, yOffset + 5);
+      drawText(`סוג המגילה: ${product.scrollType || 'לא צויין'}`, yOffset + 5 + lineHeight);
+      drawText(`סוג הכתב: ${product.scriptType || 'לא צויין'}`, yOffset + 5 + 2 * lineHeight);
+      drawText(`הערות: ${product.note || 'אין הערות'}`, yOffset + 5 + 3 * lineHeight);
+      drawText(`מחיר: ${product.price ? `${product.price} ₪` : 'לא צויין'}`, yOffset + 5 + 4 * lineHeight);
+
       if (seller) {
-        doc.setFontSize(12);
-        doc.text("📌 פרטי המוכר:", 15, yOffset);
-        yOffset += 6;
-        doc.text(`👤 ${seller.fullName || '❌ לא צויין'}`, 15, yOffset);
-        yOffset += 5;
-        doc.text(`📞 ${seller.phoneNumber || '❌ לא צויין'}`, 15, yOffset);
-        yOffset += 5;
-        doc.text(`📧 ${seller.email || '❌ לא צויין'}`, 15, yOffset);
-        yOffset += 15;
+        drawText(`פרטי המוכר:`, yOffset + 5 + 5 * lineHeight);
+        let sellerOffsetY = yOffset + 5 + 6 * lineHeight;
+
+        if (seller.fullName) {
+          drawText(seller.fullName, sellerOffsetY);
+          sellerOffsetY += lineHeight;
+        }
+        if (seller.phoneNumber) {
+          drawText(seller.phoneNumber, sellerOffsetY);
+          sellerOffsetY += lineHeight;
+        }
+        if (seller.email) {
+          drawText(seller.email, sellerOffsetY);
+          sellerOffsetY += lineHeight;
+        }
       }
+
+      yOffset += 130;
     });
 
-    doc.save('products-list.pdf');
+    const pdfData = doc.output('datauristring'); 
+
+    const response = await fetch('http://localhost:5000/send-catalog', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pdfData, 
+      }),
+    });
+
+    if (response.ok) {
+      console.log('Catalog sent successfully!');
+    } else {
+      console.error('Failed to send catalog.');
+    }
   };
 
   return (
-    <Box sx={{ marginTop: 4, display: 'flex', justifyContent: 'center' }}>
-      <Button variant="contained" color="primary" onClick={exportToPDF}>
-        📄 ייצא ל-PDF
+    <Box sx={{ marginTop: 4 }}>
+      <Button variant="contained" onClick={exportToPDF}>
+        ייצא ל-PDF
       </Button>
     </Box>
   );

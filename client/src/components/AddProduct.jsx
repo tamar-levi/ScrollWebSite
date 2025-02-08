@@ -40,7 +40,7 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
         "המלך 21 שורות",
         "11 שורות",
         "42 שורות",
-        "11 שורות גליון ס",
+        "11 שורות הרב עובדיה",
         "אחר"
     ];
     const compressionOptions = {
@@ -132,7 +132,7 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
                                 height: '45px',
                             }}
                         >
-                             {scriptTypes.map((type) => (
+                            {scriptTypes.map((type) => (
                                 <MenuItem key={type} value={type}>
                                     {type}
                                 </MenuItem>
@@ -217,7 +217,14 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
                     />
                 </Grid>
 
-                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', marginTop: '-45px' }}>
+                <Grid item xs={12} sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '-45px',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    alignItems: 'center',
+                    gap: { xs: 2, sm: 1 }
+                }}>
                     <label htmlFor="primary-image-upload">
                         <input
                             id="primary-image-upload"
@@ -233,13 +240,14 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
                                 borderColor: '#1976d2',
                                 color: '#1976d2',
                                 border: 1,
-                                margin: '0 8px',
+                                margin: { xs: '4px 0', sm: '0 8px' },
                                 fontFamily: 'Roboto, sans-serif',
-                                fontSize: '0.9rem',
+                                fontSize: { xs: '0.8rem', sm: '0.9rem' },
                                 padding: '6px 12px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px',
+                                width: { xs: '250px', sm: 'auto' }
                             }}
                             startIcon={<CloudUploadIcon />}
                             component="span"
@@ -263,13 +271,14 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
                                 borderColor: '#1976d2',
                                 color: '#1976d2',
                                 border: 1,
-                                margin: '0 8px',
+                                margin: { xs: '4px 0', sm: '0 8px' },
                                 fontFamily: 'Roboto, sans-serif',
-                                fontSize: '0.9rem',
+                                fontSize: { xs: '0.8rem', sm: '0.9rem' },
                                 padding: '6px 12px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '8px',
+                                width: { xs: '250px', sm: 'auto' }
                             }}
                             startIcon={<CloudUploadIcon />}
                             component="span"
@@ -301,26 +310,30 @@ const AddProduct = ({ onNext, onFormSubmit, productData }) => {
                 </Grid>
             </Grid>
             <Box
-                sx={[
-                    {
-                        position: 'absolute',
-                        bottom: '10%',
-                        display: 'flex',
-                        flexDirection: { xs: 'column-reverse', sm: 'row' },
-                        alignItems: 'end',
-                        gap: 1,
-                        pb: { xs: 12, sm: 0 },
-                        mt: { xs: 0, sm: 0 },
-                        width: '100%',
-                        maxWidth: 600,
-                        justifyContent: 'flex-end',
-                    },
-                ]}
+                sx={{
+                    position: 'absolute',
+                    bottom: { xs: '5%', sm: '10%' },
+                    display: 'flex',
+                    flexDirection: { xs: 'column-reverse', sm: 'row' },
+                    alignItems: 'end',
+                    gap: 1,
+                    pb: { xs: 8, sm: 0 },
+                    mt: { xs: 0, sm: 0 },
+                    width: '100%',
+                    maxWidth: 600,
+                    justifyContent: 'flex-end',
+                    px: { xs: 2, sm: 0 }
+                }}
             >
                 <Button
                     variant="contained"
                     onClick={handleSubmit}
-                    sx={{ width: { xs: '100%', sm: 'fit-content' } }}
+                    sx={{
+                        width: { xs: '120px', sm: 'fit-content' },
+                        alignSelf: { xs: 'center', sm: 'auto' },
+                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                        padding: { xs: '6px 16px', sm: '8px 22px' }
+                    }}
                 >
                     הבא
                 </Button>

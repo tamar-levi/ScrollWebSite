@@ -23,10 +23,10 @@ const ProductList = () => {
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
-        setLoading(false);  
+        setLoading(false);
       } catch (error) {
         console.error('Failed to fetch products:', error);
-        setLoading(false);  
+        setLoading(false);
       }
     };
 
@@ -44,7 +44,9 @@ const ProductList = () => {
   const handleFilter = ({ priceRange, fontType, scrollType }) => {
     const filtered = products.filter((product) => {
       const isPriceInRange = product.price >= priceRange[0] && product.price <= priceRange[1];
-      const isFontTypeMatch = fontType ? product.scriptType === fontType : true;
+      const normalizedProductFont = product.scriptType?.replace(/['"]/g, '');
+      const normalizedFilterFont = fontType?.replace(/['"]/g, '');
+      const isFontTypeMatch = fontType ? normalizedProductFont === normalizedFilterFont : true;
       const isScrollTypeMatch = scrollType ? product.scrollType === scrollType : true;
       return isPriceInRange && isFontTypeMatch && isScrollTypeMatch;
     });
@@ -52,7 +54,7 @@ const ProductList = () => {
     setFilteredProducts(filtered);
     setNoProducts(filtered.length === 0);
   };
-
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [filteredProducts]);

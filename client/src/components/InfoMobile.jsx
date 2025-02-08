@@ -28,13 +28,19 @@ export default function InfoMobile() {
 
   return (
     <div>
-      <Button
-        variant="text"
-        endIcon={<ExpandMoreRoundedIcon />}
-        onClick={toggleDrawer(true)}
-      >
-        View details
-      </Button>
+    <Button
+  variant="text"
+  endIcon={<ExpandMoreRoundedIcon />}
+  onClick={toggleDrawer(true)}
+  sx={{
+    fontWeight: 'bold',
+    '& .MuiButton-endIcon': {
+      marginRight: 0.6
+    }
+  }}
+>
+  מחירון 
+</Button>
       <Drawer
         open={open}
         anchor="top"
