@@ -59,25 +59,25 @@ const addUser = async (req, res) => {
 };
 
 const addUserFromForm = async (req, res) => {
-    const { sellerName, phoneNumber, email } = req.body;  // שלושת השדות של המשתמש
+    const { sellerName, phoneNumber, email } = req.body; 
 
-    const emailLowerCase = email.toLowerCase();  // כדי לשמור את המייל באותיות קטנות
+    const emailLowerCase = email.toLowerCase();  
 
     try {
         const newUser = new User({
-            fullName: sellerName,  // השם המלא של המוכר
-            displayName: sellerName,  // displayName - השם שמציגים
+            fullName: sellerName,  
+            displayName: sellerName,  
             phoneNumber,
             email: emailLowerCase,
-            city: 'לא צוין',  // אם לא מצוין, נמלא כ"לא צוין"
-            isSeller: true,  // נניח שברירת המחדל היא כן
-            password: require('crypto').randomBytes(16).toString('hex')  // ניצור סיסמה אוטומטית
+            city: 'לא צוין',  
+            isSeller: true,  
+            password: require('crypto').randomBytes(16).toString('hex')  
         });
 
         await newUser.save();
 
-        // מחזירים את ה-ID של המשתמש שנוצר
         res.status(201).json({ message: 'User created successfully', userId: newUser._id });
+
     } catch (err) {
         console.error('Error creating user from form', err);
         res.status(500).send('Database error');

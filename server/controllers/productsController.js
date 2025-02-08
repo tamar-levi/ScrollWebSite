@@ -54,15 +54,26 @@ const addProduct = async (req, res) => {
 };
 
 const addProductFromForm = async (req, res) => {
-    const { userId, scriptType, scrollType, price, note, isPremiumAd, primaryImage, additionalImages } = req.body;  // הנתונים על המוצר
+    const { scriptType, scrollType, price, note, isPremiumAd, primaryImage, additionalImages, sellerName, phoneNumber, email } = req.body;  
 
     try {
-        // אם לא קיים תמונה ראשית
-        if (!primaryImage) {
-            return res.status(400).json({ message: 'Primary image is required' });
+
+        let user = await User.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            const userResponse = await new Promise((resolve) => {
+                addUserFromForm({ body: { sellerName, phoneNumber, email } }, {
+                    status: () => ({ json: resolve }),
+                    json: resolve
+                });
+            });
+
+            if (!userResponse || !userResponse.userId) {
+                return res.status(500).json({ message: 'Failed to create user' });
+            }
+            user = { _id: userResponse.userId };
         }
 
-        // יצירת המוצר החדש
         const newProduct = new Product({
             scriptType,
             scrollType,
@@ -71,7 +82,7 @@ const addProductFromForm = async (req, res) => {
             additionalImages: additionalImages || [],
             note,
             isPremiumAd,
-            userId,  
+            userId: user._id 
         });
 
         await newProduct.save();
@@ -81,7 +92,6 @@ const addProductFromForm = async (req, res) => {
         res.status(500).send('Database error');
     }
 };
-
 
 const getAllProductsByUser = async (req, res) => {
     try {

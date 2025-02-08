@@ -67,32 +67,37 @@ export default function AccountMenu() {
           <Typography variant="h6" sx={{ mt: 1, fontFamily: 'Rubik, sans-serif' }}>
             {user?.fullName || 'אורח'}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {user?.email}
-          </Typography>
+          {user?.email && (
+            <Typography variant="body2" color="text.secondary">
+              {user.email}
+            </Typography>
+          )}
         </Box>
 
-        <MenuItem component     ={Link} to="/account" onClick={handleClose} dir="rtl">
-           <ListItemIcon sx  ={{ marginLeft: 1 }}>
-              <AccountCircleIcon />
-          </ListItemIcon>
-           החשבון שלי
-        </MenuItem>
+        {user && (
+          <>
+            <MenuItem component={Link} to="/account" onClick={handleClose} dir="rtl">
+              <ListItemIcon sx={{ marginLeft: 1 }}>
+                <AccountCircleIcon />
+              </ListItemIcon>
+              החשבון שלי
+            </MenuItem>
 
+            <MenuItem component={Link} to="/myProducts" onClick={handleClose} dir="rtl">
+              <ListItemIcon sx={{ marginLeft: 1 }}>
+                <InventoryIcon />
+              </ListItemIcon>
+              המוצרים שלי
+            </MenuItem>
 
-        <MenuItem component={Link} to="/myProducts" onClick={handleClose} dir="rtl">
-          <ListItemIcon sx={{ marginLeft: 1 }}>
-            <InventoryIcon />
-          </ListItemIcon>
-          המוצרים שלי
-        </MenuItem>
-
-        <MenuItem onClick={handleLogout} dir="rtl">
-          <ListItemIcon sx={{ marginLeft: 1 }}>
-            <LogoutIcon />
-          </ListItemIcon>
-          התנתק
-        </MenuItem>
+            <MenuItem onClick={handleLogout} dir="rtl">
+              <ListItemIcon sx={{ marginLeft: 1 }}>
+                <LogoutIcon />
+              </ListItemIcon>
+              התנתק
+            </MenuItem>
+          </>
+        )}
       </Menu>
     </Box>
   );

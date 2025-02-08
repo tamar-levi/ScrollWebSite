@@ -11,5 +11,6 @@ router.put('/updateUserDetails', authenticateToken, userController.updateUserDet
 router.post('/loginUser', userController.loginUser);
 router.delete('/deleteUser', authenticateToken, userController.deleteUser);
 router.post('/google-login', userController.handleGoogleLogin);
+router.post('/addUserFromForm',userController.addUserFromForm);
 
 module.exports = router;

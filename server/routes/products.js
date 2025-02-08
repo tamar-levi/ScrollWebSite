@@ -47,6 +47,24 @@ router.post('/addProduct', authenticateToken, upload.fields([
     }
     next();
 }, productsController.addProduct);
+
+router.post('/addProductFromForm', upload.fields([
+    { name: 'primaryImage', maxCount: 1 },
+    { name: 'additionalImages', maxCount: 5 }
+]), async (req, res, next) => {
+    if (req.files) {
+        if (req.files.primaryImage) {
+            req.files.primaryImage[0].buffer = await processImage(req.files.primaryImage[0]);
+        }
+        if (req.files.additionalImages) {
+            for (let image of req.files.additionalImages) {
+                image.buffer = await processImage(image);
+            }
+        }
+    }
+    next();
+}, productsController.addProductFromForm);
+
 router.put('/updateProductsDetails/:id', authenticateToken, productsController.updateProductsDetails);
 router.delete('/deleteProduct/:id', productsController.deleteProduct);
 

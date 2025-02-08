@@ -6,15 +6,22 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import AccountMenu from './AccountMenu';
 import { useTheme } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function NavBar() {
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const navigate = useNavigate();
+  
+  // סימולציה למצב חיבור, יש להחליף במערכת ניהול משתמשים אמיתית
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleMouseEnter = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleProductsNavigation = () => {
+    if (!isLoggedIn) {
+      alert("עליך להתחבר כדי לצפות במוצרים");
+    } else {
+      navigate("/products");
+    }
   };
 
   return (
@@ -33,6 +40,8 @@ export default function NavBar() {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
+            component={Link}
+            to="/contact"
           >
             צור קשר
           </Button>
@@ -52,7 +61,6 @@ export default function NavBar() {
             אודות
           </Button>
           <Button
-            onMouseEnter={handleMouseEnter}
             sx={{
               color: theme.palette.primary.main,
               fontFamily: 'Rubik, sans-serif',
@@ -62,8 +70,7 @@ export default function NavBar() {
                 borderBottom: `2px solid ${theme.palette.primary.main}`
               }
             }}
-            component={Link}
-            to="/products"
+            onClick={handleProductsNavigation}
           >
             מוצרים
           </Button>
